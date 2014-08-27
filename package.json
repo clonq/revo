@@ -1,0 +1,14 @@
+{
+  "name": "revo",
+  "version": "0.1.0",
+  "description": "nodejs app container that discovers, retrieves & launches fine-grained event-driven components",
+  "main": "container.js",
+  "author": "",
+  "license": "MIT",
+  "scripts":{
+  	"start": "node revo"
+  },
+  "dependencies": {
+    "lodash": "*"
+  }
+}
