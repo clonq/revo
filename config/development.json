@@ -1,0 +1,8 @@
+{
+	"repos": {
+		"loco": {
+			"type": "local",
+			"location": "."
+		}
+	}
+}
