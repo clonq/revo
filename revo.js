@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-
+'use strict';
 var pkg = require('./package.json'),
     debug = require('debug')('revo:'),
     fs = require('fs'),
     _ = require('underscore'),
     S = require('string'),
-    program = require('commander'),
+    // program = require('commander'),
     yaml = require('js-yaml'),
     scp = require('scp'),
     container = require('./lib/container'),
@@ -14,15 +14,49 @@ var pkg = require('./package.json'),
     util = require('./lib/util'),
     repoManager = require('./lib/repo');
 
+var yargs = require('yargs')
+    .usage('Usage: revo <command> <args> [options]')
+    .command('create', 'create a revo application')
+    .demand(2)
+    .option('f', {
+        alias: 'force',
+        demand: false,
+        // default: false,
+        describe: 'force creating an app in an existing directory'
+        // type: 'boolean'
+    })
+    .option('r', {
+        alias: 'recipe',
+        demand: false,
+        describe: 'use a recipe to generate an app'
+        // type: 'string'
+    })
+
+var argv = yargs.argv,
+    command = argv._[0];
+
+if(command === 'create') {
+    var opts = {
+        appName: argv._[1],
+        recipeFile: argv.recipe,
+        // components: program.components,
+        // data: program.data,
+        force: argv.force
+    };
+    appService.generateApp(opts);
+} else {
+    yargs.showHelp();    
+}
+
+/*
 program
     .version(pkg.version)
     .usage('[command] [args] [options]')
     .option('-c, --components <components>', 'add <components> to an application. Use commas to separate the component names in the list')
-    // .option('-d, --data <files>', 'copy <files> to the data folder. Use commas to separate the file names in the list')
+    .option('-d, --data <files>', 'copy <files> to the data folder. Use commas to separate the file names in the list')
     .option('-f, --force', 'force on non-empty directory')
-    // .option('-g, --config <config>', 'use components <config> file')
+    // .option('-C, --config <config>', 'use components <config> file')
     .option('-r, --recipe <recipe>', 'load options from <recipe>. Overrides any options from the command line')
-    // .option('-n, --name <name>', 'use <name> for the package name when generating a package')
 
 program  
     .command('create [app_name]')
@@ -32,6 +66,7 @@ program
             appName: appName,
             recipeFile: program.recipe,
             components: program.components,
+            data: program.data,
             force: !!program.force
         };
         appService.generateApp(opts);
@@ -111,3 +146,5 @@ program
 program.parse(process.argv);
 
 if(program.args.length == 0) program.help()
+
+*/

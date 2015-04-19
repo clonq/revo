@@ -1,8 +1,18 @@
 {
   "name": "revo",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "nodejs app container that discovers, retrieves & launches fine-grained event-driven components",
-  "author": "Ovi Comes",
+  "repository": "clonq/revo",
+  "author": {
+    "name": "Ovi Comes",
+    "email": "ovi.comes@gmail.com"
+  },
+  "bin": {
+    "revo": "./revo.js"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
   "scripts": {
     "prestart": "npm install",
     "create": "DEBUG=revo:* node revo create -f"
@@ -19,6 +29,7 @@
     "rimraf": "^2.3.2",
     "scp": "0.0.3",
     "string": "^3.1.1",
-    "underscore": "~1.7.0"
+    "underscore": "~1.7.0",
+    "yargs": "^3.7.2"
   }
 }

@@ -1,5 +1,7 @@
-0.1.2
+0.1.2 - Apr 19, 2015
 ====
+- use yargs instead of commander
+- introduced local repo structure
 
 0.1.1 - Apr 18, 2015
 ====
