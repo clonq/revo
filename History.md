@@ -1,3 +1,6 @@
+0.1.2
+====
+
 0.1.1 - Apr 18, 2015
 ====
 - use config for main configuration
