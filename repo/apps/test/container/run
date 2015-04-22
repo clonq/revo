@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+var container=require("./container");
+container.init();
+container.start();

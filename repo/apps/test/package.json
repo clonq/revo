@@ -1,0 +1,15 @@
+{
+    "name": "test",
+    "scripts": {
+        "version": "1.0.0",
+        "prestart": "npm install",
+        "start": "container/run"
+    },
+    "dependencies": {
+        "underscore": "*"
+    },
+    "devDependencies": {
+        "mocha": "*",
+        "chai": "*"
+    }
+}
