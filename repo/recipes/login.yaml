@@ -1,0 +1,11 @@
+title: Simple Login Recipe
+version: 0.1.0
+platform:
+ type: web
+ theme:
+  name: initializr/bootstrap
+  url: 'http://www.initializr.com/builder?boot-hero&jquerymin&h5bp-iecond&h5bp-chromeframe&h5bp-analytics&h5bp-favicon&h5bp-appletouchicons&modernizrrespond&izr-emptyscript&boot-css&boot-scripts'
+  zippath: initializr
+components:
+- clonq/login/0.1.0: { type: ui }
+- clonq/twitter/0.1.0: { type: service }
