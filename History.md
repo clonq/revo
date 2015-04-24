@@ -1,6 +1,10 @@
+0.1.4 - Apr 23, 2015
+====
+- theme caching
+
 0.1.3 - Apr 22, 2015
 ====
-- initial support for web plafrom
+- initial support for web platform
 
 0.1.2 - Apr 19, 2015
 ====
