@@ -12,5 +12,5 @@ components:
 -
  clonq/login:
   version: 0.1.0
-  type: ui
+  type: web-ui
 # - clonq/twitter/0.1.0: { type: service }
