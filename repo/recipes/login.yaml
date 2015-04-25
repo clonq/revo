@@ -11,6 +11,5 @@ platform:
  welcome_page: login
 components:
 -
- clonq/login:
-  version: 0.1.0
+ dummy/login:
   type: web-ui

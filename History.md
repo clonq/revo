@@ -1,4 +1,8 @@
-0.1.4
+0.1.5 - Apr 25, 2015
+====
+- multi-file web components
+
+0.1.4 - Apr 24, 2015
 ====
 - theme caching
 - support for remote components repo

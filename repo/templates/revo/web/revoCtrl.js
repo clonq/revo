@@ -1,4 +1,4 @@
-const welcome_page = 'clonq/login'
+const welcome_page = 'dummy/login'
 
 $(function(){
     init();
