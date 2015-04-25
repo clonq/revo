@@ -8,9 +8,9 @@ platform:
   zip_path: initializr
   insertion_points:
    - main: .jumbotron
+ welcome_page: login
 components:
 -
  clonq/login:
   version: 0.1.0
   type: web-ui
-# - clonq/twitter/0.1.0: { type: service }
