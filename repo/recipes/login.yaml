@@ -5,7 +5,11 @@ platform:
  theme:
   name: initializr/bootstrap
   url: 'http://www.initializr.com/builder?boot-hero&jquerymin&h5bp-iecond&h5bp-chromeframe&h5bp-analytics&h5bp-favicon&h5bp-appletouchicons&modernizrrespond&izr-emptyscript&boot-css&boot-scripts'
-  zippath: initializr
+  zip_path: initializr
+  insertion_points:
+   - main: .jumbotron
+ welcome_page: login
 components:
-- clonq/login/0.1.0: { type: ui }
-- clonq/twitter/0.1.0: { type: service }
+-
+ dummy/login:
+  type: web-ui

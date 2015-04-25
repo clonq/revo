@@ -1,6 +1,16 @@
+0.1.5 - Apr 25, 2015
+====
+- multi-file web components
+
+0.1.4 - Apr 24, 2015
+====
+- theme caching
+- support for remote components repo
+- todo: template insertion points
+
 0.1.3 - Apr 22, 2015
 ====
-- initial support for web plafrom
+- initial support for web platform
 
 0.1.2 - Apr 19, 2015
 ====
