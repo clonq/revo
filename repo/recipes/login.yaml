@@ -12,4 +12,8 @@ platform:
 components:
 -
  dummy/login:
-  type: web-ui
+  type: web
+-
+ dummy/bootstrap:
+  type: common
+  emit: dummy/login:load

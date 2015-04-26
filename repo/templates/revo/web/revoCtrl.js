@@ -1,4 +1,4 @@
-const welcome_page = 'dummy/login'
+const welcome_page = 'dummy_login'
 
 $(function(){
     init();
