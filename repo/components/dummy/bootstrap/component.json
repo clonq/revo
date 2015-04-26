@@ -1,0 +1,8 @@
+{
+	"description": "bootstrap",
+	"author": "Ovi Comes",
+	"version": "1.0.0",
+	"dependencies": {
+		"underscore": "*"
+	}
+}
