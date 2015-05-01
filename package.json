@@ -15,7 +15,8 @@
   },
   "scripts": {
     "prestart": "npm install",
-    "create": "DEBUG=revo:* node revo create -f"
+    "create": "DEBUG=revo:* node revo create -f",
+    "test": "DEBUG=revo:* node test/smoke.js"
   },
   "dependencies": {
     "adm-zip": "^0.4.7",
@@ -24,6 +25,7 @@
     "commander": "~2.6.0",
     "config": "^1.12.0",
     "debug": "^2.1.3",
+    "eventemitter2": "^0.4.14",
     "handlebars": "~2.0.0",
     "js-yaml": "^3.2.7",
     "jsdom": "^3.x",
