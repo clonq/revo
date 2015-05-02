@@ -1,3 +1,7 @@
+0.1.6 - May 02, 2015
+====
+- ws bridge from core to web components
+
 0.1.5 - Apr 25, 2015
 ====
 - multi-file web components
