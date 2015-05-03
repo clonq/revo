@@ -19,3 +19,6 @@ ws.onmessage = function (msg) {
 		console.log(msg.data);
 	}
 }
+window.handle = function(data) {
+	ws.send(JSON.stringify(data))
+}	

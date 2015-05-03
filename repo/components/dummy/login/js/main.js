@@ -1,5 +1,12 @@
 $(function(){
 	$(document).on('click', '#dummy_login .loginBtn', function() {
-		alert('dummy login')
+		handle({
+			action: 'login',
+			model: 'user',
+			data: {
+				name: $('#dummy_login .user').val(),
+				password: $('#dummy_login .pass').val()
+			}
+		});
 	});
 });
