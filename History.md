@@ -1,3 +1,7 @@
+0.1.7 - May 11, 2015
+====
+- support for multiple insertion points in web template 
+
 0.1.6 - May 02, 2015
 ====
 - ws bridge from core to web components
