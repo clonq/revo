@@ -16,9 +16,6 @@ components:
  dummy/bootstrap:
   type: common
   emit: dummy/login:load
-# -
-#  dummy/usermanager:
-#   type: common
-# -
-#  dummy/authentication:
-#   type: common
+-
+ dummy/authentication:
+  type: common
