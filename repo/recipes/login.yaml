@@ -8,6 +8,7 @@ platform:
   zip_path: initializr
   placeholders:
    - main: .jumbotron
+   - login: "#navbar form"
 components:
 -
  dummy/login:
@@ -16,6 +17,8 @@ components:
  dummy/bootstrap:
   type: common
   emit: dummy/login:load
+  payload:
+    placeholder: login
 -
  dummy/authentication:
   type: common
