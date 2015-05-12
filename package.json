@@ -15,8 +15,7 @@
   },
   "scripts": {
     "prestart": "npm install",
-    "create": "DEBUG=revo:* node revo create -f",
-    "test": "DEBUG=revo:* node test/smoke.js"
+    "demo": "DEBUG=revo:* node revo create test -fr login && cd repo/apps/test && ./test"
   },
   "dependencies": {
     "adm-zip": "^0.4.7",
