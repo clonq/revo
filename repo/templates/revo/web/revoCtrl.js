@@ -12,9 +12,6 @@ ws.onmessage = function (msg) {
 				placeholders.main = placeholders.main || 'body';
 			} else if(data.type === 'revo-event') {
 				if(data.event && (data.event === 'load')) {
-					console.log(placeholders)
-					console.log(data.payload.placeholder)
-					console.log(placeholders[data.payload.placeholder])
 					var placeholder = placeholders[data.payload.placeholder] || placeholders.main;
 		 			$(placeholder).load(['components', data.component, 'index.html'].join('/'));
 				}
