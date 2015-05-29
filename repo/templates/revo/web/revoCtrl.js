@@ -26,3 +26,15 @@ ws.onmessage = function (msg) {
 window.handle = function(data) {
 	ws.send(JSON.stringify(data))
 }	
+window.load = function(data) {
+	if(data.component) {
+		handle({
+			type: "from-web",
+			event: "load",
+			component: data.component,
+			payload: { placeholder: data.placeholder||"main" }
+		});
+	} else {
+		console.log('missing "component" key in load()')
+	}
+}	
