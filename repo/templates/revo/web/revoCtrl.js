@@ -38,3 +38,11 @@ window.load = function(data) {
 		console.log('missing "component" key in load()')
 	}
 }	
+window.emit = function(data) {
+	handle({
+		type: "from-web",
+		event: data.action,
+		model: data.model,
+		data: data.data
+	});
+}	
