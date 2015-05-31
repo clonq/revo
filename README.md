@@ -43,11 +43,11 @@ components:
     placeholder: main
 ```
 
-This recipe declares a web theme which becomes the web page layout. Placeholders are fragment insertion points. A component (dummy/bootstrap) can request that a web ui component (dummy/login) be asynchronously loaded into an available placeholder (main).
+This recipe declares a web theme which becomes the web page layout. Placeholders are fragment insertion points. A component (dummy/bootstrap) can request a web ui component (dummy/login) to be asynchronously loaded into an available placeholder (main).
 
-When revo parses this recipe, starts by downloading the template, installs the declared components and their dependencies, generates a package.json and configuration files and copy all these files into the target directory.
+When revo parses this recipe, it downloads the template, installs the declared components and their dependencies, generates a package.json and configuration files and copy all these files into the target directory.
 
-An new app created using the following command `revo create myapp -r testrecipe` can be started with `cd repo/apps/myapp && ./myapp` or `npm start`
+An new app created like this `revo create myapp -r testrecipe` can be started with `cd repo/apps/myapp && ./myapp` or `npm start`
 
 install
 ===
