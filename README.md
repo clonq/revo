@@ -1,9 +1,9 @@
-revo
+REVO
 ===
 
 revo is an app container that discovers, retrieves & launches fine-grained event-driven components. Build new apps by simply declaring the components required. The platform does the rest.
 
-create an app
+Create an app
 ===
 
 ###App skeleton
