@@ -19,30 +19,51 @@ ws.onmessage = function (msg) {
 		} else {
 			console.log('unknown message type:', data);
 		}
+		setTimeout(function(){registerFormHandlers();}, 100);//todo:replace timeout with onload
 	} catch(err) {
 		console.log(msg.data);
 	}
 }
-window.handle = function(data) {
-	ws.send(JSON.stringify(data))
-}	
-window.load = function(data) {
-	if(data.component) {
-		handle({
+function registerFormHandlers() {
+	$('form').each(function(i, formEl){
+		if($(formEl).attr('model')) {
+			$(formEl).on('submit', function(event) {
+				event.preventDefault();
+				var model = $(formEl).attr('model');
+				var action = $(formEl).attr('request');
+				var data = {};
+				$(formEl).find('input').each(function(i, inputEl){
+					var fieldName = $(inputEl).attr('field');
+					if(fieldName) data[fieldName] = $(inputEl).val();
+				})
+				revo.emit({ model: model, action: action, data: data });
+			});
+			//todo: register "onresponse" handler
+		}
+	})
+}
+window.revo = {
+	handle: function(data) {
+		ws.send(JSON.stringify(data))
+	},
+	load: function(data) {
+		if(data.component) {
+			revo.handle({
+				type: "from-web",
+				event: "load",
+				component: data.component,
+				payload: { placeholder: data.placeholder||"main" }
+			});
+		} else {
+			console.log('missing "component" key in load()')
+		}
+	},
+	emit: function(data) {
+		revo.handle({
 			type: "from-web",
-			event: "load",
-			component: data.component,
-			payload: { placeholder: data.placeholder||"main" }
+			event: data.action,
+			model: data.model,
+			data: data.data
 		});
-	} else {
-		console.log('missing "component" key in load()')
 	}
-}	
-window.emit = function(data) {
-	handle({
-		type: "from-web",
-		event: data.action,
-		model: data.model,
-		data: data.data
-	});
-}	
+}
