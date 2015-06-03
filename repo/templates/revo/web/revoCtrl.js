@@ -1,4 +1,5 @@
 var placeholders = {};
+var responseHandlersMap = {};
 var ws = new WebSocket("ws://localhost:3001");
 ws.onmessage = function (msg) {
 	try {
@@ -11,15 +12,22 @@ ws.onmessage = function (msg) {
 				});
 				placeholders.main = placeholders.main || 'body';
 			} else if(data.type === 'revo-event') {
-				if(data.event && (data.event === 'load')) {
-					var placeholder = placeholders[data.payload.placeholder] || placeholders.main;
-		 			$(placeholder).load(['components', data.component, 'index.html'].join('/'));
+				if(data.event) {
+					if(data.event === 'load') {
+						var placeholder = placeholders[data.payload.placeholder] || placeholders.main;
+			 			$(placeholder).load(['components', data.component, 'index.html'].join('/'));
+					} else {
+						if(data.event.endsWith('.response')) {
+console.log(':::>', data.event, '->', responseHandlersMap[key]);
+// 							var requestEventName = /(.*):response/.exec(data.event)[1];
+						}
+					}
 				}
 			}
+			setTimeout(function(){registerFormHandlers();}, 100);//todo:replace timeout with onload
 		} else {
 			console.log('unknown message type:', data);
 		}
-		setTimeout(function(){registerFormHandlers();}, 100);//todo:replace timeout with onload
 	} catch(err) {
 		console.log(msg.data);
 	}
@@ -31,14 +39,19 @@ function registerFormHandlers() {
 				event.preventDefault();
 				var model = $(formEl).attr('model');
 				var action = $(formEl).attr('request');
+				var responseHandler = $(formEl).attr('onresponse');
+				if(responseHandler) {
+					var key = model+':'+action+'.response';
+					responseHandlersMap[key] = responseHandler;
+				}
 				var data = {};
 				$(formEl).find('input').each(function(i, inputEl){
 					var fieldName = $(inputEl).attr('field');
 					if(fieldName) data[fieldName] = $(inputEl).val();
 				})
+				console.log(action, model, data)
 				revo.emit({ model: model, action: action, data: data });
 			});
-			//todo: register "onresponse" handler
 		}
 	})
 }
