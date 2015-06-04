@@ -18,8 +18,8 @@ ws.onmessage = function (msg) {
 			 			$(placeholder).load(['components', data.component, 'index.html'].join('/'));
 					} else {
 						if(data.event.endsWith('.response')) {
-console.log(':::>', data.event, '->', responseHandlersMap[key]);
-// 							var requestEventName = /(.*):response/.exec(data.event)[1];
+							var responseHandler = responseHandlersMap[data.event];
+							invokeHandler(responseHandler);
 						}
 					}
 				}
@@ -29,10 +29,24 @@ console.log(':::>', data.event, '->', responseHandlersMap[key]);
 			console.log('unknown message type:', data);
 		}
 	} catch(err) {
+		// console.log(err)
 		console.log(msg.data);
 	}
 }
+function invokeHandler(handler) {
+	if(handler) {
+		if(handler.startsWith('revo:')) {
+			handler = /revo:(.*)/.exec(handler)[1];
+			var action = /^(.*):.*/.exec(handler)[1];
+			var data = /.*:(.*)/.exec(handler)[1];
+			revo[action]({component:data});
+		} else {
+			console.log('todo: invoke custom handler', handler);
+		}
+	}
+}
 function registerFormHandlers() {
+	delete responseHandlersMap;
 	$('form').each(function(i, formEl){
 		if($(formEl).attr('model')) {
 			$(formEl).on('submit', function(event) {
@@ -49,7 +63,7 @@ function registerFormHandlers() {
 					var fieldName = $(inputEl).attr('field');
 					if(fieldName) data[fieldName] = $(inputEl).val();
 				})
-				console.log(action, model, data)
+				// console.log(action, model, data)
 				revo.emit({ model: model, action: action, data: data });
 			});
 		}
@@ -60,6 +74,8 @@ window.revo = {
 		ws.send(JSON.stringify(data))
 	},
 	load: function(data) {
+		console.log('loading:', data.component);
+		//todo trigger custom browser event
 		if(data.component) {
 			revo.handle({
 				type: "from-web",
@@ -79,4 +95,8 @@ window.revo = {
 			data: data.data
 		});
 	}
+}
+
+function dummy() {
+	console.log('dummy handler');
 }
