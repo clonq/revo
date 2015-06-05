@@ -18,8 +18,12 @@ ws.onmessage = function (msg) {
 			 			$(placeholder).load(['components', data.component, 'index.html'].join('/'));
 					} else {
 						if(data.event.endsWith('.response')) {
-							var responseHandler = responseHandlersMap[data.event];
-							invokeHandler(responseHandler);
+							if(data.payload && data.payload.error) {
+								revo.handleError(data.payload.error);
+							} else {
+								var responseHandler = responseHandlersMap[data.event];
+								invokeHandler(responseHandler);
+							}
 						}
 					}
 				}
@@ -94,6 +98,10 @@ window.revo = {
 			model: data.model,
 			data: data.data
 		});
+	},
+	handleError: function(error) {
+		//todo: trigger a local error event
+		alert(error.message)
 	}
 }
 
