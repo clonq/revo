@@ -1,3 +1,6 @@
+
+![](https://travis-ci.org/clonq/revo.svg?branch=master)
+ 
 REVO
 ===
 
