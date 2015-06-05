@@ -104,7 +104,3 @@ window.revo = {
 		alert(error.message)
 	}
 }
-
-function dummy() {
-	console.log('dummy handler');
-}
