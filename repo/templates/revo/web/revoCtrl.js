@@ -16,6 +16,7 @@ ws.onmessage = function (msg) {
 					if(data.event === 'load') {
 						var placeholder = placeholders[data.payload.placeholder] || placeholders.main;
 			 			$(placeholder).load(['components', data.component, 'index.html'].join('/'));
+						setTimeout(function(){registerFormHandlers();}, 100);//todo:replace timeout with onload
 					} else {
 						if(data.event.endsWith('.response')) {
 							if(data.payload && data.payload.error) {
@@ -28,7 +29,6 @@ ws.onmessage = function (msg) {
 					}
 				}
 			}
-			setTimeout(function(){registerFormHandlers();}, 100);//todo:replace timeout with onload
 		} else {
 			console.log('unknown message type:', data);
 		}
@@ -67,18 +67,16 @@ function registerFormHandlers() {
 					var fieldName = $(inputEl).attr('field');
 					if(fieldName) data[fieldName] = $(inputEl).val();
 				})
-				// console.log(action, model, data)
 				revo.emit({ model: model, action: action, data: data });
 			});
 		}
-	})
+	});
 }
 window.revo = {
 	handle: function(data) {
 		ws.send(JSON.stringify(data))
 	},
 	load: function(data) {
-		console.log('loading:', data.component);
 		//todo trigger custom browser event
 		if(data.component) {
 			revo.handle({
