@@ -58,6 +58,11 @@ function registerFormHandlers() {
 				var model = $(formEl).attr('model');
 				var action = $(formEl).attr('request');
 				var responseHandler = $(formEl).attr('onresponse');
+				if((responseHandler.indexOf('_') > 0) && (responseHandler.indexOf('_') < responseHandler.indexOf('/'))) {
+					//responseHandler is in safe format
+				} else {
+					responseHandler = responseHandler.replace('/', '_');
+				}
 				if(responseHandler) {
 					var key = model+':'+action+'.response';
 					responseHandlersMap[key] = responseHandler;
