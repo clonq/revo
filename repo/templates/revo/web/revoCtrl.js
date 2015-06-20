@@ -4,6 +4,7 @@ var ws = new WebSocket("ws://localhost:3001");
 ws.onmessage = function (msg) {
 	try {
 		var data = JSON.parse(msg.data);
+		data.payload = data.payload || {};
 		if(data.type) {
 			if(data.type === 'revo-config') {
 				data.config.placeholders.forEach(function(ph){
@@ -13,14 +14,13 @@ ws.onmessage = function (msg) {
 				placeholders.main = placeholders.main || 'body';
 			} else if(data.type === 'revo-event') {
 				if(data.event) {
-console.log(data)
 					if(data.event === 'load') {
 						var placeholder = placeholders[data.payload.placeholder] || placeholders.main;
 			 			$(placeholder).load(['components', data.component, 'index.html'].join('/'));
 						setTimeout(function(){registerFormHandlers();}, 100);//todo:replace timeout with onload
 					} else {
 						if(data.event.endsWith('.response')) {
-							if(data.payload && data.payload.error) {
+							if(data.payload.error) {
 								revo.handleError(data.payload.error);
 							} else {
 								var responseHandler = responseHandlersMap[data.event];
@@ -34,8 +34,7 @@ console.log(data)
 			console.log('unknown message type:', data);
 		}
 	} catch(err) {
-		// console.log(err)
-		console.log(msg.data);
+		console.log('['+msg.data+']');
 	}
 }
 function invokeHandler(handler) {
