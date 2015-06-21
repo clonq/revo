@@ -1,5 +1,6 @@
 var placeholders = {};
-var responseHandlersMap = {};
+var successHandlersMap = {};
+var errorHandlersMap = {};
 var ws = new WebSocket("ws://localhost:3001");
 ws.onmessage = function (msg) {
 	try {
@@ -21,10 +22,12 @@ ws.onmessage = function (msg) {
 					} else {
 						if(data.event.endsWith('.response')) {
 							if(data.payload.error) {
-								revo.handleError(data.payload.error);
+								var errorHandler = errorHandlersMap[data.event];
+								if(errorHandler) invokeHandler(errorHandler);
+								else revo.handleError(data.payload.error);
 							} else {
-								var responseHandler = responseHandlersMap[data.event];
-								invokeHandler(responseHandler);
+								var successHandler = successHandlersMap[data.event];
+								if(successHandler) invokeHandler(successHandler);
 							}
 						}
 					}
@@ -50,23 +53,37 @@ function invokeHandler(handler) {
 	}
 }
 function registerFormHandlers() {
-	delete responseHandlersMap;
+	delete successHandlersMap;
+	delete errorHandlersMap;
 	$('form').each(function(i, formEl){
 		if($(formEl).attr('model')) {
 			$(formEl).on('submit', function(event) {
 				event.preventDefault();
 				var model = $(formEl).attr('model');
 				var action = $(formEl).attr('request');
-				var responseHandler = $(formEl).attr('onresponse');
-				if((responseHandler.indexOf('_') > 0) && (responseHandler.indexOf('_') < responseHandler.indexOf('/'))) {
-					//responseHandler is in safe format
-				} else {
-					responseHandler = responseHandler.replace('/', '_');
-				}
-				if(responseHandler) {
+				// register success handler
+				var successHandler = $(formEl).attr('onsuccess');
+				if(successHandler) {
+					if((successHandler.indexOf('_') > 0) && (successHandler.indexOf('_') < successHandler.indexOf('/'))) {
+						//successHandler is in safe format
+					} else {
+						successHandler = successHandler.replace('/', '_');
+					}
 					var key = model+':'+action+'.response';
-					responseHandlersMap[key] = responseHandler;
+					successHandlersMap[key] = successHandler;
 				}
+				// register error handler
+				var errorHandler = $(formEl).attr('onerror');
+				if(errorHandler) {
+					if((errorHandler.indexOf('_') > 0) && (errorHandler.indexOf('_') < errorHandler.indexOf('/'))) {
+						//errorHandler is in safe format
+					} else {
+						errorHandler = errorHandler.replace('/', '_');
+					}
+					var key = model+':'+action+'.response';
+					errorHandlersMap[key] = errorHandler;
+				}
+				// build payload and trigger form submission
 				var data = {};
 				$(formEl).find('input').each(function(i, inputEl){
 					var fieldName = $(inputEl).attr('field');
