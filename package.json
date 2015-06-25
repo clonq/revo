@@ -1,6 +1,6 @@
 {
   "name": "revo",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "nodejs app container that discovers, retrieves & launches fine-grained event-driven components",
   "repository": "clonq/revo",
   "author": {

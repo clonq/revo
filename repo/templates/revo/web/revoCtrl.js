@@ -17,7 +17,14 @@ ws.onmessage = function (msg) {
 				if(data.event) {
 					if(data.event === 'load') {
 						var placeholder = placeholders[data.payload.placeholder] || placeholders.main;
-			 			$(placeholder).load(['components', data.component, 'index.html'].join('/'));
+						// console.log('loading:', ['components', data.component, 'index.html'].join('/'))
+			 			// $(placeholder).load(['components', data.component, 'index.html'].join('/'));
+			 			$(placeholder).load(['components', data.component, 'index'].join('/'));
+			 			// $(placeholder).load(['components', data.component].join('/'));
+			 			// $(placeholder).load('components/test');
+			 			// var url = 'test';
+			 			// console.log(url)
+			 			// $(placeholder).load(url);
 						setTimeout(function(){registerFormHandlers();}, 100);//todo:replace timeout with onload
 					} else {
 						if(data.event.endsWith('.response')) {
