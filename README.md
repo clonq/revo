@@ -63,11 +63,12 @@ components:
 ```
 
 Revo will search for this component at https://github.com/clonq/revo-user/archive/master.zip.
-```
+
 
 Installation
 ===
 npm install revo
+
 
 
 Component Design Guide
