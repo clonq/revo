@@ -6,49 +6,51 @@ REVO
 
 Assemble applications from recipes.
 
-Sample recipe
+Sample web app recipe
 ===
 ```
 platform:
  type: web
  theme:
   name: initializr/bootstrap
-  url: 'http://www.initializr.com/builder?boot-hero&jquerymin&h5bp-iecond&h5bp-chromeframe&h5bp-analytics&h5bp-favicon&h5bp-appletouchicons&modernizrrespond&izr-emptyscript&boot-css&boot-scripts'
-  zip_path: initializr
+  url: '...'
   placeholders:
    - main: .jumbotron
 components:
 -
- clonq/user/login:
+ mike/login:
   type: web
   handles: user:login
 ```
+`theme` specifies the web page layout/template which is downloaded and cached. 
 
-initializr/bootstrap is the web page layout which will be downloaded from the specified url. Placeholders are fragment insertion points.
+`placeholders` are fragment insertion points.
 
-clonq/user/login is a web ui component that is asynchronously loaded into the page via an available placeholder.
+`components` are specialized modules that deal with a single application aspect (e.g. login ui, authentication, etc)  
+
+Web components are asynchronously loaded and inserted into the web layout in one of the available placeholders.
+
+Revo components can be stored locally or in remote repos and will be fetched if necessary when the app is assembled.
 
 
 Assemble the app
 ===
-Save the recipe to repo/recipes/myapp.yaml then run:
+Recipes are should be saved in revo's local repo in the recipes folder as yaml files. To generate a complete nodejs app from a recipe named `myrecipe` saved in `<revo_home>/repo/recipes/myrecipe.yaml` provide the app name and the recipe as arguments to revo create:  
 
 ```
-./revo.js create myapp -fr myapp
+./revo.js create <app_name> -r <recipe>
 ```
 
 Start the new app
 ===
-```
-cd repo/apps/myapp && ./myapp
-```
+Once assembled, the new app is stored in `<revo_home>/repo/apps/<app_name>`. The app can be started using `npm start` or via the shell wrapper available and named after the app name.
+ 
 
-When revo parses this recipe, it downloads the template, installs the declared components and their dependencies, generates a package.json and configuration files and copy all these files into the target directory.
+Components
+===
+Developers could build new apps based only on the available components. Custom content needs to be provided by the application developer in the form  of themes or web components.
 
-An new app created like this `revo create myapp -r testrecipe` can be started with `cd repo/apps/myapp && ./myapp` or `npm start`
-
-###Components
-Components can be locally created or stored in remote repos. Github and npm are both recognized as valid component repos. To declare a github-stored component in your recipe just add `repo: github` to the component configuration e.g.:
+Custom components can also be created and saved in `<revo_home>/repo/components` or in github. To declare a github-stored component in your recipe just add `repo: github` to the component configuration e.g.:
 
 ```
 ...
@@ -60,15 +62,14 @@ components:
 ...  
 ```
 
-Revo will search for this component at https://github.com/clonq/revo-user/archive/master.zip. Alternatively, you may specify the component uri:
-
-```
- clonq/revo-user:
-  type: common
-  uri: https://github.com/clonq/revo-user/archive/v1.zip
+Revo will search for this component at https://github.com/clonq/revo-user/archive/master.zip.
 ```
 
-Install
+Installation
 ===
 npm install revo
 
+
+Component Design Guide
+===
+TODO
