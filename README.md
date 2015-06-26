@@ -4,31 +4,11 @@
 REVO
 ===
 
-revo is an app container that discovers, retrieves & launches fine-grained event-driven components. Build new apps by simply declaring the components required. The platform does the rest.
+Assemble applications from recipes.
 
-Create an app
+Sample recipe
 ===
-
-###App skeleton
-````
-$ revo create myapp
-````
-
-Generates an empty app called myapp, no components or any data files added
-
-###Using a recipe
-
-````
-$ revo create myapp -f -r testrecipe
-````
-
-Generates an app using a recipe file named 'testrecipe'
-
-
-###Sample recipe
 ```
-title: Simple Login Recipe
-version: 0.1.0
 platform:
  type: web
  theme:
@@ -39,14 +19,29 @@ platform:
    - main: .jumbotron
 components:
 -
- dummy/bootstrap:
-  type: common
-  emit: dummy/login:load
-  payload:
-    placeholder: main
+ clonq/user/login:
+  type: web
+  handles: user:login
 ```
 
-This recipe declares a web theme which becomes the web page layout. Placeholders are fragment insertion points. A component (dummy/bootstrap) can request a web ui component (dummy/login) to be asynchronously loaded into an available placeholder (main).
+initializr/bootstrap is the web page layout which will be downloaded from the specified url. Placeholders are fragment insertion points.
+
+clonq/user/login is a web ui component that is asynchronously loaded into the page via an available placeholder.
+
+
+Assemble the app
+===
+Save the recipe to repo/recipes/myapp.yaml then run:
+
+```
+./revo.js create myapp -fr myapp
+```
+
+Start the new app
+===
+```
+cd repo/apps/myapp && ./myapp
+```
 
 When revo parses this recipe, it downloads the template, installs the declared components and their dependencies, generates a package.json and configuration files and copy all these files into the target directory.
 
