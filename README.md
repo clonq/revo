@@ -35,10 +35,10 @@ Revo components can be stored locally or in remote repos and will be fetched if 
 
 Assemble the app
 ===
-Recipes are should be saved in revo's local repo in the recipes folder as yaml files. To generate a complete nodejs app from a recipe named `myrecipe` saved in `<revo_home>/repo/recipes/myrecipe.yaml` provide the app name and the recipe as arguments to revo create:  
+Recipes should be saved in revo's local repo in the `recipes` folder as yaml files. To generate a complete node app from a recipe named `myrecipe` saved under `<revo_home>/repo/recipes/myrecipe.yaml`, provide the app name and the recipe as arguments to `revo create`:  
 
 ```
-./revo.js create <app_name> -r <recipe>
+revo create <app_name> -r <recipe>
 ```
 
 Start the new app
