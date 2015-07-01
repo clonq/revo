@@ -8,11 +8,15 @@ ws.onmessage = function (msg) {
 		data.payload = data.payload || {};
 		if(data.type) {
 			if(data.type === 'revo-config') {
-				data.config.placeholders.forEach(function(ph){
-					var name = Object.keys(ph)[0];
-					placeholders[name] = ph[name];
-				});
-				placeholders.main = placeholders.main || 'body';
+				if(data.config && data.config.placeholders) {
+					data.config.placeholders.forEach(function(ph){
+						var name = Object.keys(ph)[0];
+						placeholders[name] = ph[name];
+					});
+					placeholders.main = placeholders.main || 'body';
+				} else {
+					console.log('todo: >>>>>>>>', JSON.stringify(data));
+				}
 			} else if(data.type === 'revo-event') {
 				if(data.event) {
 					if(data.event === 'load') {
@@ -36,6 +40,10 @@ ws.onmessage = function (msg) {
 								var successHandler = successHandlersMap[data.event];
 								if(successHandler) invokeHandler(successHandler);
 							}
+						} else {
+							//todo:...
+							// var successHandler = successHandlersMap[data.event];
+							// if(successHandler) invokeHandler(successHandler);
 						}
 					}
 				}
