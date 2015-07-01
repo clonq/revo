@@ -106,7 +106,6 @@ window.revo = {
 		ws.send(JSON.stringify(data))
 	},
 	load: function(data) {
-		//todo trigger custom browser event
 		if(data.component) {
 			revo.handle({
 				type: "from-web",
@@ -114,6 +113,7 @@ window.revo = {
 				component: data.component,
 				payload: { placeholder: data.placeholder||"main" }
 			});
+console.log('loading', data.component);
 		} else {
 			console.log('missing "component" key in load()')
 		}
