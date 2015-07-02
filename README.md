@@ -43,7 +43,7 @@ revo create <app_name> -r <recipe>
 
 Start the new app
 ===
-Once assembled, the new app is stored in `<revo_home>/repo/apps/<app_name>`. The app can be started using `npm start` or via the shell wrapper available and named after the app name.
+Once assembled, the new app is stored in `<revo_home>/repo/apps/<app_name>`. The app can be started using `npm start` or via the shell wrapper available and named after the app name. The generated app is a standard self-contained node.js application that can be deployed anywhere with no dependencies other than the ones declared in its own package.json. 
  
 
 Components
@@ -62,7 +62,7 @@ components:
 ...  
 ```
 
-Revo will search for this component at https://github.com/clonq/revo-user/archive/master.zip.
+Revo will search for this component at https://github.com/clonq/revo-user/archive/master.zip and install it along with all the other declared components in the app folder.
 
 
 Installation

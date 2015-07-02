@@ -1,6 +1,7 @@
 var placeholders = {};
 var successHandlersMap = {};
 var errorHandlersMap = {};
+var customEventHandlers = {};
 var ws = new WebSocket("ws://localhost:3001");
 ws.onmessage = function (msg) {
 	try {
@@ -14,8 +15,12 @@ ws.onmessage = function (msg) {
 						placeholders[name] = ph[name];
 					});
 					placeholders.main = placeholders.main || 'body';
-				} else {
-					console.log('todo: >>>>>>>>', JSON.stringify(data));
+				} else if(data.register) {
+					data.register.forEach(function(component){
+						document.addEventListener(component.listen, function (e) {
+							invokeHandler(component.safename);
+						});
+					});
 				}
 			} else if(data.type === 'revo-event') {
 				if(data.event) {
@@ -30,21 +35,17 @@ ws.onmessage = function (msg) {
 			 			// console.log(url)
 			 			// $(placeholder).load(url);
 						setTimeout(function(){registerFormHandlers();}, 100);//todo:replace timeout with onload
-					} else {
-						if(data.event.endsWith('.response')) {
-							if(data.payload.error) {
-								var errorHandler = errorHandlersMap[data.event];
-								if(errorHandler) invokeHandler(errorHandler);
-								else revo.handleError(data.payload.error);
-							} else {
-								var successHandler = successHandlersMap[data.event];
-								if(successHandler) invokeHandler(successHandler);
-							}
+					} else if(data.event.endsWith('.response')) {
+						if(data.payload.error) {
+							var errorHandler = errorHandlersMap[data.event];
+							if(errorHandler) invokeHandler(errorHandler);
+							else revo.handleError(data.payload.error);
 						} else {
-							//todo:...
-							// var successHandler = successHandlersMap[data.event];
-							// if(successHandler) invokeHandler(successHandler);
+							var successHandler = successHandlersMap[data.event];
+							if(successHandler) invokeHandler(successHandler);
 						}
+					} else {
+						document.dispatchEvent(new CustomEvent(data.event, data.payload));
 					}
 				}
 			}
@@ -63,7 +64,9 @@ function invokeHandler(handler) {
 			var data = /.*:(.*)/.exec(handler)[1];
 			revo[action]({component:data});
 		} else {
-			console.log('todo: invoke custom handler', handler);
+			// console.log('todo: invoke custom handler', handler);
+			handler = handler.replace(/\-/g, '_');
+			customEventHandlers[handler]();//todo: refactor
 		}
 	}
 }
