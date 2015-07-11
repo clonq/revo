@@ -18,7 +18,7 @@ ws.onmessage = function (msg) {
 				} else if(data.register) {
 					data.register.forEach(function(component){
 						document.addEventListener(component.listen, function (e) {
-							invokeHandler(component.safename);
+							invokeHandler(component.safename, component.listen);
 						});
 					});
 				}
@@ -56,7 +56,7 @@ ws.onmessage = function (msg) {
 		console.log('['+msg.data+']');
 	}
 }
-function invokeHandler(handler) {
+function invokeHandler(handler, event) {
 	if(handler) {
 		if(handler.startsWith('revo:')) {
 			handler = /revo:(.*)/.exec(handler)[1];
@@ -64,9 +64,8 @@ function invokeHandler(handler) {
 			var data = /.*:(.*)/.exec(handler)[1];
 			revo[action]({component:data});
 		} else {
-			// console.log('todo: invoke custom handler', handler);
 			handler = handler.replace(/\-/g, '_');
-			customEventHandlers[handler]();//todo: refactor
+			customEventHandlers[handler](event);//todo: refactor
 		}
 	}
 }
