@@ -31,6 +31,14 @@ var yargs = require('yargs')
         describe: 'use a recipe to generate an app'
         // type: 'string'
     })
+    .command('package', 'package an existing revo application')
+    .option('d', {
+        alias: 'destination',
+        demand: false,
+        // default: false,
+        describe: 'set the destination directory for the packaged app'
+        // type: 'boolean'
+    })
 
 var argv = yargs.argv,
     command = argv._[0];
@@ -44,6 +52,18 @@ if(command === 'create') {
         force: argv.force
     };
     appService.generateApp(opts);
+} else if(command === 'package') {
+    var opts = {
+        appName: argv._[1],
+        destination: argv.destination
+    };
+    appService.packageApp(opts);
+} else if(command === 'deploy') {
+    var opts = {
+        appName: argv._[1],
+        recipeFile: argv.recipe
+    };
+    appService.deployApp(opts);
 } else {
     yargs.showHelp();    
 }
