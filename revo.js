@@ -39,6 +39,13 @@ var yargs = require('yargs')
         describe: 'set the destination directory for the packaged app'
         // type: 'boolean'
     })
+    .option('t', {
+        alias: 'target',
+        demand: false,
+        // default: false,
+        describe: 'the deployment target (must be declared in the recipe)'
+        // type: 'boolean'
+    })
 
 var argv = yargs.argv,
     command = argv._[0];
@@ -61,7 +68,8 @@ if(command === 'create') {
 } else if(command === 'deploy') {
     var opts = {
         appName: argv._[1],
-        recipeFile: argv.recipe
+        recipeFile: argv.recipe,
+        deploymentTarget: argv.target
     };
     appService.deployApp(opts);
 } else {
