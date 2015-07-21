@@ -46,6 +46,7 @@ var yargs = require('yargs')
         describe: 'the deployment target (must be declared in the recipe)'
         // type: 'boolean'
     })
+    .command('deploy', 'deploy an existing revo application')
 
 var argv = yargs.argv,
     command = argv._[0];
