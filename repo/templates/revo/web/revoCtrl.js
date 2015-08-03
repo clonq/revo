@@ -2,6 +2,7 @@ var placeholders = {};
 var successHandlersMap = {};
 var errorHandlersMap = {};
 var customEventHandlers = {};
+var componentInitializers = {};
 var ws = new WebSocket("ws://localhost:3001");
 ws.onmessage = function (msg) {
 	try {
@@ -9,16 +10,21 @@ ws.onmessage = function (msg) {
 		data.payload = data.payload || {};
 		if(data.type) {
 			if(data.type === 'revo-config') {
-				if(data.config && data.config.placeholders) {
+				if(data.init) {
+					var componentNamespace = data.init.safename.replace(/\-/g, '_');
+					window[componentNamespace].init(data.init);
+				}
+				else if(data.config && data.config.placeholders) {
 					data.config.placeholders.forEach(function(ph){
 						var name = Object.keys(ph)[0];
 						placeholders[name] = ph[name];
 					});
 					placeholders.main = placeholders.main || 'body';
-				} else if(data.register) {
+				}
+				else if(data.register) {
 					data.register.forEach(function(component){
-						document.addEventListener(component.listen, function (e) {
-							invokeHandler(component.safename, component.listen);
+						document.addEventListener(component.handles, function (e) {
+							invokeHandler(component.safename, component.handles);
 						});
 					});
 				}
@@ -120,7 +126,7 @@ window.revo = {
 			revo.handle({
 				type: "from-web",
 				event: "load",
-				component: data.component,
+				component: data.component.replace('/', '_'),
 				payload: { placeholder: data.placeholder||"main" }
 			});
 console.log('loading', data.component);
