@@ -1,6 +1,6 @@
 {
   "name": "revo",
-  "version": "0.4.11",
+  "version": "0.5.0",
   "description": "nodejs app container that discovers, retrieves & launches fine-grained event-driven components",
   "repository": "clonq/revo",
   "bin": {
@@ -44,6 +44,7 @@
     "tar": "^2.1.1",
     "underscore": "~1.7.0",
     "uuid": "^2.0.1",
+    "vantage": "^1.2.0",
     "ws": "^0.7.1",
     "yargs": "^3.7.2"
   },
