@@ -23,6 +23,7 @@ ws.onmessage = function (msg) {
 				}
 				else if(data.register) {
 					data.register.forEach(function(component){
+console.log('registering component', component.safename, component.handles);
 						document.addEventListener(component.handles, function (e) {
 							invokeHandler(component.safename, component.handles);
 						});
@@ -59,7 +60,7 @@ ws.onmessage = function (msg) {
 			console.log('unknown message type:', data);
 		}
 	} catch(err) {
-		console.log('['+msg.data+']');
+		// console.log('['+msg.data+']');
 	}
 }
 function invokeHandler(handler, event) {
@@ -129,7 +130,7 @@ window.revo = {
 				component: data.component.replace('/', '_'),
 				payload: { placeholder: data.placeholder||"main" }
 			});
-console.log('loading', data.component);
+// console.log('loading', data.component);
 		} else {
 			console.log('missing "component" key in load()')
 		}
@@ -145,5 +146,9 @@ console.log('loading', data.component);
 	handleError: function(error) {
 		//todo: trigger a local error event
 		alert(error.message)
+	},
+	listen: function(component, handler){
+		customEventHandlers[component] = handler;		
+		// console.log('custom event handler registered for', component);
 	}
 }
