@@ -23,7 +23,7 @@ ws.onmessage = function (msg) {
 				}
 				else if(data.register) {
 					data.register.forEach(function(component){
-console.log('registering component', component.safename, component.handles);
+console.log('registering', component.safename, 'as event handler for', component.handles, 'events');
 						document.addEventListener(component.handles, function (e) {
 							invokeHandler(component.safename, component.handles);
 						});
