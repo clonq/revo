@@ -3,7 +3,7 @@ var successHandlersMap = {};
 var errorHandlersMap = {};
 var customEventHandlers = {};
 var componentInitializers = {};
-var status = { configured:false, initialized:false, registered:false }
+var componentsStatus = { expected:{}, actual:{} };
 var ws = new WebSocket("ws://localhost:3001");
 ws.onmessage = function (msg) {
 	try {
@@ -12,14 +12,14 @@ ws.onmessage = function (msg) {
 		if(data.type) {
 			if(data.type === 'revo-config') {
 				if(data.expect) {
-					console.log('setting expectations:', data.expect);
+					componentsStatus.expected = data.expect;
 				} else if(data.init) {
 					data.init.forEach(function(component){
 						console.log('initializing:', component.name);					
 						var componentNamespace = component.safename.replace(/\-/g, '_');
 						window[componentNamespace].init(component);
+						componentsStatus.actual.init = componentsStatus.actual.hasOwnProperty('init') ? componentsStatus.actual.init+1 : 1;
 					});
-					status.initialized = true;
 				}
 				else if(data.config && data.config.placeholders) {
 					console.log('page configuration: placeholders')
@@ -28,16 +28,19 @@ ws.onmessage = function (msg) {
 						placeholders[name] = ph[name];
 					});
 					placeholders.main = placeholders.main || 'body';
-					status.configured = true;
 				}
 				else if(data.register) {
 					data.register.forEach(function(component){
 						console.log('registering', component.safename, 'as event handler for', component.handles, 'events');
+						componentsStatus.actual.register = componentsStatus.actual.hasOwnProperty('register') ? componentsStatus.actual.register+1 : 1;
 						document.addEventListener(component.handles, function (e) {
 							invokeHandler(component.safename, component.handles);
 						});
 					});
-					status.registered = true;
+				}
+				// ask all common components to "reinitialize for this client"
+				if((componentsStatus.expected.register == componentsStatus.actual.register) && (componentsStatus.expected.init == componentsStatus.actual.init)) {
+					revo.emit({ model: 'revo', action: 'common-init', data: '' });
 				}
 			} else if(data.type === 'revo-event') {
 				if(data.event) {
