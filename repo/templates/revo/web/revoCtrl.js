@@ -5,6 +5,9 @@ var customEventHandlers = {};
 var componentInitializers = {};
 var componentsStatus = { expected:{}, actual:{} };
 var ws = new WebSocket("ws://localhost:3001");
+var placeholderSize = {};
+var alreadyInitialized = false;
+var isClientReady = false;
 ws.onmessage = function (msg) {
 	try {
 		var data = JSON.parse(msg.data);
@@ -36,21 +39,16 @@ ws.onmessage = function (msg) {
 					});
 					placeholders.main = placeholders.main || 'body';
 				}
-				if((componentsStatus.expected.register == componentsStatus.actual.register) && (componentsStatus.expected.init == componentsStatus.actual.init)) {
-console.log('client is ready')
-					revo.emit({ model: 'revo', action: 'client-ready', data: '' });
-				}
 			} else if(data.type === 'revo-event') {
 				if(data.event) {
 					if(data.event === 'load') {
 						var placeholder = placeholders[data.payload.placeholder] || placeholders.main;
 						// console.log('loading:', ['components', data.component, 'index.html'].join('/'))
 			 			// $(placeholder).load(['components', data.component, 'index.html'].join('/'));
-console.log('..>>>>>', placeholder);
-			 			$(document).ready(function(){
-							registerFormHandlers();
-console.log('...........', $('#revo-config-ui form').attr('model'));
-			 			});
+// 			 			$(document).ready(function(){
+// 							registerFormHandlers();
+// // console.log('...........', $('#revo-config-ui form').attr('model'));
+// 			 			});
 			 			$(placeholder).load(['components', data.component, 'index'].join('/'));
 			 			// $(placeholder).load(['components', data.component].join('/'));
 			 			// $(placeholder).load('components/test');
@@ -95,16 +93,14 @@ function invokeHandler(handler, event) {
 	}
 }
 function registerFormHandlers() {
-	console.log('registering form handlers');
 	delete successHandlersMap;
 	delete errorHandlersMap;
 	$('form').each(function(i, formEl){
-console.log('form found:', formEl)		
 		if($(formEl).attr('model')) {
-			console.log('registering success handler for:', model);
 			// register event handlers
 			var model = $(formEl).attr('model');
 			var action = $(formEl).attr('request');
+			console.log('registering success handler for:', model);
 			// register success handler
 			var successHandler = $(formEl).attr('onsuccess');
 			if(successHandler) {
@@ -114,7 +110,7 @@ console.log('form found:', formEl)
 					successHandler = successHandler.replace('/', '_');
 				}
 				var key = model+':'+action+'.response';
-				console.log('sucess handler:', key, '->', successHandler);
+				console.log('success handler:', key, '->', successHandler);
 				successHandlersMap[key] = successHandler;
 			}
 			// register error handler
@@ -177,17 +173,32 @@ window.revo = {
 	}
 }
 $(function(){
-	checkDOMChange(3000);
+	document.addEventListener("placeholder:changed", function (e) {
+		registerFormHandlers();
+		isClientReady = !alreadyInitialized && (componentsStatus.expected.register == componentsStatus.actual.register) && (componentsStatus.expected.init == componentsStatus.actual.init);
+		if(isClientReady) {
+console.log('client is ready')
+			revo.emit({ model: 'revo', action: 'client-ready', data: '' });
+			alreadyInitialized = true;
+		}
+	});
+	checkDOMChange(1000);
 })
+
 
 function checkDOMChange(freq) {
 	//check if placeholders content has changed
 	Object.keys(placeholders).forEach(function(placeholderName){
 		var placeholderEl = $(placeholders[placeholderName]);
-		console.log(placeholderName, '->', placeholderEl.html);
-// console.log(placeholderName)		
+		if(!!placeholderEl.html()) {
+			placeholderSize[placeholderName] = placeholderSize[placeholderName] || {};
+			placeholderSize[placeholderName].previous = placeholderSize[placeholderName].previous || 1;
+			placeholderSize[placeholderName].current = placeholderEl.html().length;
+			if(placeholderSize[placeholderName].current != placeholderSize[placeholderName].previous) {
+				placeholderSize[placeholderName].previous = placeholderSize[placeholderName].current;
+				document.dispatchEvent(new CustomEvent('placeholder:changed', { detail: placeholderName } ));
+			}
+		}
 	})
-	// document.dispatchEvent(new CustomEvent('', data.payload));
-	// var elementExists = document.getElementById("find-me");	
     setTimeout( function(){ checkDOMChange(freq); }, freq||100 );
 }
