@@ -179,10 +179,11 @@ $(function(){
 		if(isClientReady) {
 console.log('client is ready')
 			revo.emit({ model: 'revo', action: 'client-ready', data: '' });
+			document.dispatchEvent(new CustomEvent('client-ready'));
 			alreadyInitialized = true;
 		}
 	});
-	checkDOMChange(1000);
+	checkDOMChange();
 })
 
 
