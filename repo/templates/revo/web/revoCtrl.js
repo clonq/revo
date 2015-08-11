@@ -43,20 +43,7 @@ ws.onmessage = function (msg) {
 				if(data.event) {
 					if(data.event === 'load') {
 						var placeholder = placeholders[data.payload.placeholder] || placeholders.main;
-						// console.log('loading:', ['components', data.component, 'index.html'].join('/'))
-			 			// $(placeholder).load(['components', data.component, 'index.html'].join('/'));
-// 			 			$(document).ready(function(){
-// 							registerFormHandlers();
-// // console.log('...........', $('#revo-config-ui form').attr('model'));
-// 			 			});
 			 			$(placeholder).load(['components', data.component, 'index'].join('/'));
-			 			// $(placeholder).load(['components', data.component].join('/'));
-			 			// $(placeholder).load('components/test');
-			 			// var url = 'test';
-			 			// console.log(url)
-			 			// $(placeholder).load(url);
-						// setTimeout(function(){registerFormHandlers();}, 100);//todo:replace timeout with onload
-						// registerFormHandlers();
 					} else if(data.event.endsWith('.response')) {
 						if(data.payload.error) {
 							var errorHandler = errorHandlersMap[data.event];
@@ -64,7 +51,6 @@ ws.onmessage = function (msg) {
 							else revo.handleError(data.payload.error);
 						} else {
 							var successHandler = successHandlersMap[data.event];
-console.log(':::::>>', data.event, '->', successHandler)						
 							if(successHandler) invokeHandler(successHandler);
 						}
 					} else {
@@ -177,9 +163,9 @@ $(function(){
 		registerFormHandlers();
 		isClientReady = !alreadyInitialized && (componentsStatus.expected.register == componentsStatus.actual.register) && (componentsStatus.expected.init == componentsStatus.actual.init);
 		if(isClientReady) {
-console.log('client is ready')
-			revo.emit({ model: 'revo', action: 'client-ready', data: '' });
-			document.dispatchEvent(new CustomEvent('client-ready'));
+			// fire one time "client ready" event in the browser and back to the container
+			revo.emit({ model: 'revo', action: 'revo:client:ready', data: '' });
+			document.dispatchEvent(new CustomEvent('revo:ready'));
 			alreadyInitialized = true;
 		}
 	});
