@@ -20,8 +20,15 @@ ws.onmessage = function (msg) {
 						window[componentNamespace].init(component);
 						componentsStatus.actual.init = componentsStatus.actual.hasOwnProperty('init') ? componentsStatus.actual.init+1 : 1;
 					});
-				}
-				else if(data.config && data.config.placeholders) {
+				} else if(data.register) {
+					data.register.forEach(function(component){
+						console.log('registering event handler for', component.handles, '->', component.name);
+						componentsStatus.actual.register = componentsStatus.actual.hasOwnProperty('register') ? componentsStatus.actual.register+1 : 1;
+						document.addEventListener(component.handles, function (e) {
+							invokeHandler(component.safename, component.handles);
+						});
+					});
+				} else if(data.config && data.config.placeholders) {
 					console.log('page configuration: placeholders')
 					data.config.placeholders.forEach(function(ph){
 						var name = Object.keys(ph)[0];
@@ -29,18 +36,9 @@ ws.onmessage = function (msg) {
 					});
 					placeholders.main = placeholders.main || 'body';
 				}
-				else if(data.register) {
-					data.register.forEach(function(component){
-						console.log('registering', component.safename, 'as event handler for', component.handles, 'events');
-						componentsStatus.actual.register = componentsStatus.actual.hasOwnProperty('register') ? componentsStatus.actual.register+1 : 1;
-						document.addEventListener(component.handles, function (e) {
-							invokeHandler(component.safename, component.handles);
-						});
-					});
-				}
-				// ask all common components to "reinitialize for this client"
 				if((componentsStatus.expected.register == componentsStatus.actual.register) && (componentsStatus.expected.init == componentsStatus.actual.init)) {
-					revo.emit({ model: 'revo', action: 'common-init', data: '' });
+console.log('client is ready')
+					revo.emit({ model: 'revo', action: 'client-ready', data: '' });
 				}
 			} else if(data.type === 'revo-event') {
 				if(data.event) {
@@ -48,13 +46,19 @@ ws.onmessage = function (msg) {
 						var placeholder = placeholders[data.payload.placeholder] || placeholders.main;
 						// console.log('loading:', ['components', data.component, 'index.html'].join('/'))
 			 			// $(placeholder).load(['components', data.component, 'index.html'].join('/'));
+console.log('..>>>>>', placeholder);
+			 			$(document).ready(function(){
+							registerFormHandlers();
+console.log('...........', $('#revo-config-ui form').attr('model'));
+			 			});
 			 			$(placeholder).load(['components', data.component, 'index'].join('/'));
 			 			// $(placeholder).load(['components', data.component].join('/'));
 			 			// $(placeholder).load('components/test');
 			 			// var url = 'test';
 			 			// console.log(url)
 			 			// $(placeholder).load(url);
-						setTimeout(function(){registerFormHandlers();}, 100);//todo:replace timeout with onload
+						// setTimeout(function(){registerFormHandlers();}, 100);//todo:replace timeout with onload
+						// registerFormHandlers();
 					} else if(data.event.endsWith('.response')) {
 						if(data.payload.error) {
 							var errorHandler = errorHandlersMap[data.event];
@@ -62,6 +66,7 @@ ws.onmessage = function (msg) {
 							else revo.handleError(data.payload.error);
 						} else {
 							var successHandler = successHandlersMap[data.event];
+console.log(':::::>>', data.event, '->', successHandler)						
 							if(successHandler) invokeHandler(successHandler);
 						}
 					} else {
@@ -90,36 +95,42 @@ function invokeHandler(handler, event) {
 	}
 }
 function registerFormHandlers() {
+	console.log('registering form handlers');
 	delete successHandlersMap;
 	delete errorHandlersMap;
 	$('form').each(function(i, formEl){
+console.log('form found:', formEl)		
 		if($(formEl).attr('model')) {
+			console.log('registering success handler for:', model);
+			// register event handlers
+			var model = $(formEl).attr('model');
+			var action = $(formEl).attr('request');
+			// register success handler
+			var successHandler = $(formEl).attr('onsuccess');
+			if(successHandler) {
+				if((successHandler.indexOf('_') > 0) && (successHandler.indexOf('_') < successHandler.indexOf('/'))) {
+					//successHandler is in safe format
+				} else {
+					successHandler = successHandler.replace('/', '_');
+				}
+				var key = model+':'+action+'.response';
+				console.log('sucess handler:', key, '->', successHandler);
+				successHandlersMap[key] = successHandler;
+			}
+			// register error handler
+			var errorHandler = $(formEl).attr('onerror');
+			if(errorHandler) {
+				if((errorHandler.indexOf('_') > 0) && (errorHandler.indexOf('_') < errorHandler.indexOf('/'))) {
+					//errorHandler is in safe format
+				} else {
+					errorHandler = errorHandler.replace('/', '_');
+				}
+				var key = model+':'+action+'.response';
+				errorHandlersMap[key] = errorHandler;
+			}
+			// handle form submission
 			$(formEl).on('submit', function(event) {
 				event.preventDefault();
-				var model = $(formEl).attr('model');
-				var action = $(formEl).attr('request');
-				// register success handler
-				var successHandler = $(formEl).attr('onsuccess');
-				if(successHandler) {
-					if((successHandler.indexOf('_') > 0) && (successHandler.indexOf('_') < successHandler.indexOf('/'))) {
-						//successHandler is in safe format
-					} else {
-						successHandler = successHandler.replace('/', '_');
-					}
-					var key = model+':'+action+'.response';
-					successHandlersMap[key] = successHandler;
-				}
-				// register error handler
-				var errorHandler = $(formEl).attr('onerror');
-				if(errorHandler) {
-					if((errorHandler.indexOf('_') > 0) && (errorHandler.indexOf('_') < errorHandler.indexOf('/'))) {
-						//errorHandler is in safe format
-					} else {
-						errorHandler = errorHandler.replace('/', '_');
-					}
-					var key = model+':'+action+'.response';
-					errorHandlersMap[key] = errorHandler;
-				}
 				// build payload and trigger form submission
 				var data = {};
 				$(formEl).find('input').each(function(i, inputEl){
@@ -164,4 +175,19 @@ window.revo = {
 		customEventHandlers[component] = handler;		
 		// console.log('custom event handler registered for', component);
 	}
+}
+$(function(){
+	checkDOMChange(3000);
+})
+
+function checkDOMChange(freq) {
+	//check if placeholders content has changed
+	Object.keys(placeholders).forEach(function(placeholderName){
+		var placeholderEl = $(placeholders[placeholderName]);
+		console.log(placeholderName, '->', placeholderEl.html);
+// console.log(placeholderName)		
+	})
+	// document.dispatchEvent(new CustomEvent('', data.payload));
+	// var elementExists = document.getElementById("find-me");	
+    setTimeout( function(){ checkDOMChange(freq); }, freq||100 );
 }
