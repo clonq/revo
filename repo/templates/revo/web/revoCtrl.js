@@ -51,7 +51,7 @@ ws.onmessage = function (msg) {
 							else revo.handleError(data.payload.error);
 						} else {
 							var successHandler = successHandlersMap[data.event];
-							if(successHandler) invokeHandler(successHandler);
+							if(!!successHandler) invokeHandler(successHandler, data.event, data.payload);
 						}
 					} else {
 						document.dispatchEvent(new CustomEvent(data.event, data.payload));
@@ -65,7 +65,7 @@ ws.onmessage = function (msg) {
 		// console.log('['+msg.data+']');
 	}
 }
-function invokeHandler(handler, event) {
+function invokeHandler(handler, event, payload) {
 	if(handler) {
 		if(handler.startsWith('revo:')) {
 			handler = /revo:(.*)/.exec(handler)[1];
@@ -74,7 +74,7 @@ function invokeHandler(handler, event) {
 			revo[action]({component:data});
 		} else {
 			handler = handler.replace(/\-/g, '_');
-			customEventHandlers[handler](event);//todo: refactor
+			customEventHandlers[handler](event, payload);
 		}
 	}
 }
@@ -153,9 +153,9 @@ window.revo = {
 		//todo: trigger a local error event
 		alert(error.message)
 	},
-	listen: function(component, handler){
-		customEventHandlers[component] = handler;		
-		// console.log('custom event handler registered for', component);
+	registerCustomEventHandler: function(handlerName, handlerFunction){
+		customEventHandlers[handlerName] = handlerFunction;		
+		console.log('custom event handler', handlerName, 'registered');
 	}
 }
 $(function(){
