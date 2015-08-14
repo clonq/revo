@@ -4,9 +4,7 @@ var errorHandlersMap = {};
 var customEventHandlers = {};
 var componentInitializers = {};
 var componentsStatus = { expected:{}, actual:{} };
-// var ws = new WebSocket('ws://'+window.location.hostname+':3001');
 var ws = new WebSocket('ws://'+window.location.hostname+':3000');
-// var ws = new WebSocket({ port: 3001 });
 var placeholderSize = {};
 var alreadyInitialized = false;
 var isClientReady = false;
@@ -20,21 +18,21 @@ ws.onmessage = function (msg) {
 					componentsStatus.expected = data.expect;
 				} else if(data.init) {
 					data.init.forEach(function(component){
-						console.log('initializing:', component.name);					
+						// console.log('initializing:', component.name);					
 						var componentNamespace = component.safename.replace(/\-/g, '_');
 						window[componentNamespace].init(component);
 						componentsStatus.actual.init = componentsStatus.actual.hasOwnProperty('init') ? componentsStatus.actual.init+1 : 1;
 					});
 				} else if(data.register) {
 					data.register.forEach(function(component){
-						console.log('registering event handler for', component.handles, '->', component.name);
+						// console.log('registering event handler for', component.handles, '->', component.name);
 						componentsStatus.actual.register = componentsStatus.actual.hasOwnProperty('register') ? componentsStatus.actual.register+1 : 1;
 						document.addEventListener(component.handles, function (e) {
 							invokeHandler(component.safename, component.handles);
 						});
 					});
 				} else if(data.config && data.config.placeholders) {
-					console.log('page configuration: placeholders')
+					// console.log('page configuration: placeholders')
 					data.config.placeholders.forEach(function(ph){
 						var name = Object.keys(ph)[0];
 						placeholders[name] = ph[name];
@@ -45,7 +43,10 @@ ws.onmessage = function (msg) {
 				if(data.event) {
 					if(data.event === 'load') {
 						var placeholder = placeholders[data.payload.placeholder] || placeholders.main;
-			 			$(placeholder).load(['components', data.component, 'index'].join('/'));
+			 			$(placeholder).load(['components', data.component, 'index'].join('/'), function(){
+							revo.emit({ model: 'revo', action: 'client:ready', data: '' });
+							document.dispatchEvent(new CustomEvent('revo:ready'));
+			 			});
 					} else if(data.event.endsWith('.response')) {
 						if(data.payload.error) {
 							var errorHandler = errorHandlersMap[data.event];
@@ -88,7 +89,7 @@ function registerFormHandlers() {
 			// register event handlers
 			var model = $(formEl).attr('model');
 			var action = $(formEl).attr('request');
-			console.log('registering success handler for:', model);
+			// console.log('registering success handler for:', model);
 			// register success handler
 			var successHandler = $(formEl).attr('onsuccess');
 			if(successHandler) {
@@ -98,7 +99,7 @@ function registerFormHandlers() {
 					successHandler = successHandler.replace('/', '_');
 				}
 				var key = model+':'+action+'.response';
-				console.log('success handler:', key, '->', successHandler);
+// console.log('success handler:', key, '->', successHandler);
 				successHandlersMap[key] = successHandler;
 			}
 			// register error handler
@@ -160,34 +161,33 @@ window.revo = {
 		console.log('custom event handler', handlerName, 'registered');
 	}
 }
-$(function(){
-	document.addEventListener("placeholder:changed", function (e) {
-		registerFormHandlers();
-		isClientReady = !alreadyInitialized && (componentsStatus.expected.register == componentsStatus.actual.register) && (componentsStatus.expected.init == componentsStatus.actual.init);
-		if(isClientReady) {
-			// fire one time "client ready" event in the browser and back to the container
-			revo.emit({ model: 'revo', action: 'revo:client:ready', data: '' });
-			document.dispatchEvent(new CustomEvent('revo:ready'));
-			alreadyInitialized = true;
-		}
-	});
-	checkDOMChange();
-})
+// $(function(){
+// 	document.addEventListener("placeholder:changed", function (e) {
+// 		registerFormHandlers();
+// 		isClientReady = !alreadyInitialized && (componentsStatus.expected.register == componentsStatus.actual.register) && (componentsStatus.expected.init == componentsStatus.actual.init);
+// 		if(isClientReady) {
+// 			// fire one time "client ready" event in the browser and back to the container
+// 			revo.emit({ model: 'revo', action: 'client:ready', data: '' });
+// 			// document.dispatchEvent(new CustomEvent('revo:ready'));
+// 			alreadyInitialized = true;
+// 		}
+// 	});
+// 	checkDOMChange();
+// })
 
-
-function checkDOMChange(freq) {
-	//check if placeholders content has changed
-	Object.keys(placeholders).forEach(function(placeholderName){
-		var placeholderEl = $(placeholders[placeholderName]);
-		if(!!placeholderEl.html()) {
-			placeholderSize[placeholderName] = placeholderSize[placeholderName] || {};
-			placeholderSize[placeholderName].previous = placeholderSize[placeholderName].previous || 1;
-			placeholderSize[placeholderName].current = placeholderEl.html().length;
-			if(placeholderSize[placeholderName].current != placeholderSize[placeholderName].previous) {
-				placeholderSize[placeholderName].previous = placeholderSize[placeholderName].current;
-				document.dispatchEvent(new CustomEvent('placeholder:changed', { detail: placeholderName } ));
-			}
-		}
-	})
-    setTimeout( function(){ checkDOMChange(freq); }, freq||100 );
-}
+// function checkDOMChange(freq) {
+// 	//check if placeholders content has changed
+// 	Object.keys(placeholders).forEach(function(placeholderName){
+// 		var placeholderEl = $(placeholders[placeholderName]);
+// 		if(!!placeholderEl.html()) {
+// 			placeholderSize[placeholderName] = placeholderSize[placeholderName] || {};
+// 			placeholderSize[placeholderName].previous = placeholderSize[placeholderName].previous || 1;
+// 			placeholderSize[placeholderName].current = placeholderEl.html().length;
+// 			if(placeholderSize[placeholderName].current != placeholderSize[placeholderName].previous) {
+// 				placeholderSize[placeholderName].previous = placeholderSize[placeholderName].current;
+// 				document.dispatchEvent(new CustomEvent('placeholder:changed', { detail: placeholderName } ));
+// 			}
+// 		}
+// 	})
+//     setTimeout( function(){ checkDOMChange(freq); }, freq||100 );
+// }
