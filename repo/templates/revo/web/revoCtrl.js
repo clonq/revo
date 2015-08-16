@@ -46,6 +46,7 @@ ws.onmessage = function (msg) {
 			 			$(placeholder).load(['components', data.component, 'index'].join('/'), function(){
 							revo.emit({ model: 'revo', action: 'client:ready', data: '' });
 							document.dispatchEvent(new CustomEvent('revo:ready'));
+							registerFormHandlers();
 			 			});
 					} else if(data.event.endsWith('.response')) {
 						if(data.payload.error) {
@@ -69,6 +70,7 @@ ws.onmessage = function (msg) {
 	}
 }
 function invokeHandler(handler, event, payload) {
+console.log('invokeHandler:', handler, event, JSON.stringify(payload));
 	if(handler) {
 		if(handler.startsWith('revo:')) {
 			handler = /revo:(.*)/.exec(handler)[1];
@@ -99,7 +101,6 @@ function registerFormHandlers() {
 					successHandler = successHandler.replace('/', '_');
 				}
 				var key = model+':'+action+'.response';
-// console.log('success handler:', key, '->', successHandler);
 				successHandlersMap[key] = successHandler;
 			}
 			// register error handler
@@ -139,7 +140,6 @@ window.revo = {
 				component: data.component.replace('/', '_'),
 				payload: { placeholder: data.placeholder||"main" }
 			});
-// console.log('loading', data.component);
 		} else {
 			console.log('missing "component" key in load()')
 		}
@@ -161,33 +161,3 @@ window.revo = {
 		console.log('custom event handler', handlerName, 'registered');
 	}
 }
-// $(function(){
-// 	document.addEventListener("placeholder:changed", function (e) {
-// 		registerFormHandlers();
-// 		isClientReady = !alreadyInitialized && (componentsStatus.expected.register == componentsStatus.actual.register) && (componentsStatus.expected.init == componentsStatus.actual.init);
-// 		if(isClientReady) {
-// 			// fire one time "client ready" event in the browser and back to the container
-// 			revo.emit({ model: 'revo', action: 'client:ready', data: '' });
-// 			// document.dispatchEvent(new CustomEvent('revo:ready'));
-// 			alreadyInitialized = true;
-// 		}
-// 	});
-// 	checkDOMChange();
-// })
-
-// function checkDOMChange(freq) {
-// 	//check if placeholders content has changed
-// 	Object.keys(placeholders).forEach(function(placeholderName){
-// 		var placeholderEl = $(placeholders[placeholderName]);
-// 		if(!!placeholderEl.html()) {
-// 			placeholderSize[placeholderName] = placeholderSize[placeholderName] || {};
-// 			placeholderSize[placeholderName].previous = placeholderSize[placeholderName].previous || 1;
-// 			placeholderSize[placeholderName].current = placeholderEl.html().length;
-// 			if(placeholderSize[placeholderName].current != placeholderSize[placeholderName].previous) {
-// 				placeholderSize[placeholderName].previous = placeholderSize[placeholderName].current;
-// 				document.dispatchEvent(new CustomEvent('placeholder:changed', { detail: placeholderName } ));
-// 			}
-// 		}
-// 	})
-//     setTimeout( function(){ checkDOMChange(freq); }, freq||100 );
-// }
