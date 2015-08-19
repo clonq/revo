@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var pkg = require('./package.json');
 var vantage = require('vantage')();
 
@@ -94,6 +96,9 @@ vantage.command('component search <component>', 'Search for <component> in local
 
 
 vantage
-    .delimiter('revo '+pkg.version+':')
-    .listen(9440)
-    .show();
+    .exec("help").then(function(){
+        vantage
+        .delimiter('revo '+pkg.version+':')
+        .listen(9440)
+        .show();
+    })
