@@ -71,7 +71,7 @@ var recipe = {
 }
 
 // disable default vantage menu
-vantage.command('exit').hidden().action(function(args,cb){ process.exit() });
+vantage.command('exit', 'Exits revo\'s interactive CLI.').action(function(args,cb){ process.exit() });
 vantage.command('repl').hidden().action(function(args,cb){cb()});
 vantage.command('use').hidden().action(function(args,cb){cb()});
 vantage.command('vantage').hidden().action(function(args,cb){cb()});
