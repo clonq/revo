@@ -1,7 +1,7 @@
 {
   "name": "revo",
   "version": "0.5.11",
-  "description": "nodejs app container that discovers, retrieves & launches fine-grained event-driven components",
+  "description": "assemble apps from components - no coding required - almost :)",
   "repository": "clonq/revo",
   "bin": {
     "revo": "./cli.js"
