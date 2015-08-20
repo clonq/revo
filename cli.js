@@ -3,6 +3,7 @@
 var pkg = require('./package.json');
 var vantage = require('vantage')();
 var appService = require('./lib/services/appService');
+var repoService = require('./lib/services/repoService');
 
 var ERROR = require('chalk').red.bold;
 var WARN = require('chalk').yellow.bold;
@@ -23,21 +24,42 @@ var component = {
 
 var app = {
     create: function(args, cb) {
+        var self = this;
         var appName = args.app_name;
-        var recipe = args.recipe || common.recipe;
+        var recipe = args.recipe || common.recipeName;
         if(!!recipe) {
-            // this.log('App created from recipe', recipe);
-            var opts = {
-                appName: appName,
-                recipeFile: recipe
-                // force: argv.force
-            };
-            appService.generateApp(opts);
+            var recipeSrc = repoService.checkRecipe(recipe);
+            if(recipeSrc != 'unavailable') {
+                if(!!args.recipe) {
+                    this.log('Using', recipeSrc, 'recipe:', args.recipe);
+                } else {
+                    this.log('Using previously loaded recipe:', common.recipe);
+                }
+                var opts = {
+                    appName: appName,
+                    recipeFile: recipe,
+                    force: !!args.options.force
+                };
+                appService
+                .generateApp(opts)
+                .then(function(recipe){
+                    common.recipeName = recipe;
+                    common.recipe = recipe;
+                    self.log(appName, 'app created in local repo');
+                    cb();
+                }, function(err){
+                    self.log(ERROR(err));
+                    cb();
+                });
+            } else {
+                this.log(ERROR(recipe, 'recipe is not available either in the local repo or the central hub'));
+                cb();
+            }
         } else {
-            this.log(ERROR('No application recipe provided'));
-            this.log(INFO('Use "app create <recipe>" or "recipe load <recipe>" to specify a recipe'));
+            this.log(ERROR('Recipe not provided and no previously loaded recipe is available'));
+            this.log(INFO('Use "app create <app_name> <recipe>" or "recipe load <recipe>" to specify a recipe'));
+            cb();
         }
-        cb();
     },
     deploy: function(args, cb) {
         this.log('TODO:', args.app, 'deployed');
@@ -90,7 +112,10 @@ vantage.command('use').hidden().action(function(args,cb){cb()});
 vantage.command('vantage').hidden().action(function(args,cb){cb()});
 
 // app command group
-vantage.command('app create <app_name> [recipe]', 'Create a new app').action(app.create);
+vantage
+.command('app create <app_name> [recipe]', 'Create a new app <app_name> in the local repo')
+.option('-f, --force ', 'force existing app ovewrite')
+.action(app.create);
 vantage.command('app deploy <app>', 'Deploy a previously created app').action(app.deploy);
 vantage.command('app list', 'Get a list of local apps').action(app.list);
 vantage.command('app run <app>', 'Run an existing app on the local host').action(app.run);
@@ -109,6 +134,7 @@ vantage.command('component search <component>', 'Search for <component> in local
 
 
 vantage
+    // .exec("app create test test").then(function(){
     .exec("help").then(function(){
         vantage
         .delimiter('revo '+pkg.version+':')
