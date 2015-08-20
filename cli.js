@@ -68,11 +68,15 @@ var app = {
     },
     list: function(args, cb) {
         var apps = repoService.app.list();
-        var rows = [];
-        apps.forEach(function(appName){
-            rows.push([appName, 'local']);
-        })
-        util.table(rows, ['Application Name', 'Repository']);
+        if(!!apps.length) {
+            var rows = [];
+            apps.forEach(function(appName){
+                rows.push([appName, 'local']);
+            })
+            util.table(rows, ['Application Name', 'Repository']);
+        } else {
+            this.log('There are no apps in the local repo');
+        }
         cb();
     },
     run: function(args, cb) {
@@ -93,11 +97,15 @@ var recipe = {
     },
     list: function(args, cb){
         var recipes = repoService.recipe.list();
-        var rows = [];
-        recipes.forEach(function(recipeName){
-            rows.push([recipeName, 'local']);
-        })
-        util.table(rows, ['Recipe Name', 'Repository']);
+        if(!!recipes.length) {
+            var rows = [];
+            recipes.forEach(function(recipeName){
+                rows.push([recipeName, 'local']);
+            })
+            util.table(rows, ['Recipe Name', 'Repository']);
+        } else {
+            this.log('There are no recipes in the local repo');
+        }
         cb();
     },
     search: function(args, cb){
@@ -143,6 +151,8 @@ vantage.command('recipe add component <component>', 'Add <component> to current 
 vantage.command('component list', 'Get a list of local components').action(component.list);
 vantage.command('component search <component>', 'Search for <component> in local and central repos').action(component.search);
 
+
+repoService.init();
 
 // vantage
 //     .exec("help").then(function(){

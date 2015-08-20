@@ -17,14 +17,14 @@ Run REVO
 ===
 ```
 $ revo
-revo 0.5.11: 
+revo 0.5.13: 
 ```
 The new prompt shows that revo is running and accepting commands.
 
 Type `help` to get the list of available commands. If everything runs well, the command’s output looks like this:
 
 ```
-revo 0.5.11: help
+revo 0.5.13: help
 
   Commands:
 
