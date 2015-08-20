@@ -4,6 +4,7 @@ var pkg = require('./package.json');
 var vantage = require('vantage')();
 var appService = require('./lib/services/appService');
 var repoService = require('./lib/services/repoService');
+var util = require('./lib/util');
 
 var ERROR = require('chalk').red.bold;
 var WARN = require('chalk').yellow.bold;
@@ -28,7 +29,7 @@ var app = {
         var appName = args.app_name;
         var recipe = args.recipe || common.recipeName;
         if(!!recipe) {
-            var recipeSrc = repoService.checkRecipe(recipe);
+            var recipeSrc = repoService.recipe.check(recipe);
             if(recipeSrc != 'unavailable') {
                 if(!!args.recipe) {
                     this.log('Using', recipeSrc, 'recipe:', args.recipe);
@@ -66,7 +67,12 @@ var app = {
         cb();
     },
     list: function(args, cb) {
-        this.log('TODO: app list');
+        var apps = repoService.app.list();
+        var rows = [];
+        apps.forEach(function(appName){
+            rows.push([appName, 'local']);
+        })
+        util.table(rows, ['Application Name', 'Repository']);
         cb();
     },
     run: function(args, cb) {
@@ -106,7 +112,7 @@ var recipe = {
 }
 
 // disable default vantage menu
-vantage.command('exit', 'Exits revo\'s interactive CLI.').action(function(args,cb){ process.exit() });
+vantage.command('exit', 'Exits revo\'s interactive CLI.').action(function(args,cb){ this.log('See you soon'); process.exit() });
 vantage.command('repl').hidden().action(function(args,cb){cb()});
 vantage.command('use').hidden().action(function(args,cb){cb()});
 vantage.command('vantage').hidden().action(function(args,cb){cb()});
