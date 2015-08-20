@@ -92,7 +92,12 @@ var recipe = {
         cb();
     },
     list: function(args, cb){
-        this.log('TODO: recipe list');
+        var recipes = repoService.recipe.list();
+        var rows = [];
+        recipes.forEach(function(recipeName){
+            rows.push([recipeName, 'local']);
+        })
+        util.table(rows, ['Recipe Name', 'Repository']);
         cb();
     },
     search: function(args, cb){
