@@ -144,11 +144,10 @@ vantage.command('component list', 'Get a list of local components').action(compo
 vantage.command('component search <component>', 'Search for <component> in local and central repos').action(component.search);
 
 
-vantage
-    // .exec("app create test test").then(function(){
-    .exec("help").then(function(){
+// vantage
+//     .exec("help").then(function(){
         vantage
         .delimiter('revo '+pkg.version+':')
         .listen(9440)
         .show();
-    })
+    // });

@@ -4,73 +4,37 @@
 REVO
 ===
 
-Assemble applications from recipes.
+REVO is an open platform for building, deploying and running node.js applications. It allows programmers to assemble complex apps in minutes by reusing existing components.
 
-Sample web app recipe
+Install REVO
 ===
-```
-platform:
- type: web
- theme:
-  name: initializr/bootstrap
-  url: '...'
-  placeholders:
-   - main: .jumbotron
-components:
--
- mike/login:
-  type: web
-  handles: user:login
-```
-`theme` specifies the web page layout/template which is downloaded and cached. 
-
-`placeholders` are fragment insertion points.
-
-`components` are specialized modules that deal with a single application aspect (e.g. login ui, authentication, etc)  
-
-Web components are asynchronously loaded and inserted into the web layout in one of the available placeholders.
-
-Revo components can be stored locally or in remote repos and will be fetched if necessary when the app is assembled.
-
-
-Assemble the app
-===
-Recipes should be saved in revo's local repo in the `recipes` folder as yaml files. To generate a complete node app from a recipe named `myrecipe` saved under `<revo_home>/repo/recipes/myrecipe.yaml`, provide the app name and the recipe as arguments to `revo create`:  
 
 ```
-revo create <app_name> -r <recipe>
+$ npm install -g revo
 ```
 
-Start the new app
+Run REVO
 ===
-Once assembled, the new app is stored in `<revo_home>/repo/apps/<app_name>`. The app can be started using `npm start` or via the shell wrapper available and named after the app name. The generated app is a standard self-contained node.js application that can be deployed anywhere with no dependencies other than the ones declared in its own package.json. 
- 
+```
+$ revo
+revo 0.5.11: 
+```
+The new prompt shows that revo is running and accepting commands.
 
-Components
-===
-Developers could build new apps based only on the available components. Custom content needs to be provided by the application developer in the form  of themes or web components.
-
-Custom components can also be created and saved in `<revo_home>/repo/components` or in github. To declare a github-stored component in your recipe just add `repo: github` to the component configuration e.g.:
+Type `help` to get the list of available commands. If everything runs well, the command’s output looks like this:
 
 ```
-...
-components:
--
- clonq/revo-user:
-  type: common
-  repo: github
-...  
+revo 0.5.11: help
+
+  Commands:
+
+    help [command]  Provides help for a given command.
+    exit            Exits revo's interactive CLI.
+
+  Command Groups:
+
+    app *           5 sub-commands.
+    recipe *        5 sub-commands.
+    component *     2 sub-commands.
 ```
-
-Revo will search for this component at https://github.com/clonq/revo-user/archive/master.zip and install it along with all the other declared components in the app folder.
-
-
-Installation
-===
-npm install revo
-
-
-
-Component Design Guide
-===
-TODO
+This message shows that your installation appears to be working correctly.
