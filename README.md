@@ -1,6 +1,3 @@
-
-![](https://travis-ci.org/clonq/revo.svg?branch=master)
- 
 REVO
 ===
 
@@ -38,3 +35,6 @@ revo 0.5.13: help
     component *     2 sub-commands.
 ```
 This message shows that your installation appears to be working correctly.
+
+![](https://travis-ci.org/clonq/revo.svg?branch=master)
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/clonq/revo/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
