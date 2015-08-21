@@ -5,6 +5,7 @@ var vantage = require('vantage')();
 var appService = require('./lib/services/appService');
 var repoService = require('./lib/services/repoService');
 var util = require('./lib/util');
+var S = require('string');
 
 var ERROR = require('chalk').red.bold;
 var WARN = require('chalk').yellow.bold;
@@ -100,9 +101,16 @@ var recipe = {
         if(!!recipes.length) {
             var rows = [];
             recipes.forEach(function(recipeName){
-                rows.push([recipeName, 'local']);
+                var recipe = repoService.recipe.load(recipeName);
+                recipe.platform = recipe.platform || { type: 'cli'};
+                recipe.author = recipe.author || 'unknown';
+                var title = S(recipe.title).truncate(50).s;
+                var version = S(recipe.version).truncate(8).s;
+                var platform = S(recipe.platform.type).truncate(3).s;
+                var author = S(recipe.author).truncate(10).s;
+                rows.push([title, version, platform, author]);
             })
-            util.table(rows, ['Recipe Name', 'Repository']);
+            util.table(rows, ['Recipe Name', 'Version', 'Platform', 'Author']);
         } else {
             this.log('There are no recipes in the local repo');
         }
