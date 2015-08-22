@@ -44,10 +44,10 @@ revo 0.5.0: app
   Commands:
 
     app create [options] <app_name> [recipe]  Create a new app <app_name> in the local repo
-    app deploy <app>                          Deploy a previously created app
+    app deploy <app_name>                     Deploy a previously created app
     app list                                  Get a list of local apps
-    app run <app>                             Run an existing app on the local host
-    app search <app>                          Search for <app> in local and central repos
+    app run <app_name>                        Run an existing app on the local host
+    app search <app_name>                     Search for <app> in local and central repos
 
 
 ```
@@ -69,7 +69,15 @@ revo 0.5.0: recipe
     recipe add *            1 sub-command.
 ```
 
-`recipe list` shows a list of available recipes in your local repository:
+An application recipe can be stored on any server but in order to create an application, you need a copy of the recipe in the local repo.
+
+Let's fetch a basic recipe from github:
+
+```
+
+```
+
+Type `recipe list` to show a list of available recipes avaiable in your local repository:
 
 ```
 revo 0.5.0: recipe list
@@ -80,7 +88,7 @@ hello-world  1.0.0    web       revo     basic Hello World recipe
 	
 ```
 
-Let's use the "hello-world" recipe to build a new app. Type `app create myapp hello-world` to create a new application named "myapp" using the "hello-world" recipe: 
+The "hello-world" recipe has been successfully downloaded to your local repo. Let's use it to build a new app. Type `app create myapp hello-world` to create a new application named "myapp" using the "hello-world" recipe: 
 
 ```
 revo 0.5.0: app create myapp hello-world
@@ -88,7 +96,7 @@ Using local recipe: hello-world
 myapp app created in local repo
 ```
 
-Verify the application was created and available in the local repo by typing `app list`:
+To verify the application was created, type `app list`:
 
 ```
 revo 0.5.0: app list
@@ -98,6 +106,12 @@ Application Name  Repository
 myapp             local
 ```
 
+The app is now available in the local repo. To retrieve it from the repo just type `app package`:
+
+```
+revo 0.5.0: app package myapp
+myapp has been packaged to /revo/demo/myapp.zip
+```
 
 ---
 

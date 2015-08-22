@@ -80,6 +80,11 @@ var app = {
         }
         cb();
     },
+    package: function(args, cb) {
+        var zip = appService.packageApp({appName: args.app_name, destination: args.location});
+        this.log(args.app_name, 'has been packaged to', zip);
+        cb();
+    },
     run: function(args, cb) {
         this.log('TODO: running', args.app);
         cb();
@@ -87,7 +92,7 @@ var app = {
     search: function(args, cb){
         this.log('TODO: search app...');
         cb();
-    }
+    },
 }
 
 var recipe = {
@@ -147,14 +152,15 @@ vantage
 .command('app create <app_name> [recipe]', 'Create a new app <app_name> in the local repo')
 .option('-f, --force ', 'force existing app ovewrite')
 .action(app.create);
-vantage.command('app deploy <app>', 'Deploy a previously created app').action(app.deploy);
+vantage.command('app deploy <app_name>', 'Deploy a previously created app').action(app.deploy);
 vantage.command('app list', 'Get a list of local apps').action(app.list);
-vantage.command('app run <app>', 'Run an existing app on the local host').action(app.run);
-vantage.command('app search <app>', 'Search for <app> in local and central repos').action(app.search);
+vantage.command('app run <app_name>', 'Run an existing app on the local host').action(app.run);
+vantage.command('app search <app_name>', 'Search for <app> in local and central repos').action(app.search);
+vantage.command('app package <app_name>', 'extract <app_name> from the local repo into a zip file').action(app.package);
 
 // recipe command group
-vantage.command('recipe load <recipe>', 'Make <recipe> the current source for app creation, deployment, etc').action(recipe.load);
 vantage.command('recipe list', 'Get a list of local recipes').action(recipe.list);
+vantage.command('recipe load <recipe>', 'Make <recipe> the current source for app creation, deployment, etc').action(recipe.load);
 vantage.command('recipe search <recipe>', 'Search for <recipe> in local and central repos').action(recipe.search);
 vantage.command('recipe show <recipe>', 'Show <recipe> source').action(recipe.show);
 vantage.command('recipe add component <component>', 'Add <component> to current recipe').action(recipe.components.add);
@@ -162,7 +168,6 @@ vantage.command('recipe add component <component>', 'Add <component> to current 
 // component command group
 vantage.command('component list', 'Get a list of local components').action(component.list);
 vantage.command('component search <component>', 'Search for <component> in local and central repos').action(component.search);
-
 
 repoService.init();
 
