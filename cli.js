@@ -127,7 +127,6 @@ var recipe = {
     },
     pull: function(args, cb){
         var self = this;
-        this.log('Fetching recipe from', args.url);
         repoService.recipe.download(args.url)
         .then(function(recipe){
             self.log(recipe.name, 'downloaded to local repo');

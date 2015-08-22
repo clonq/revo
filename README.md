@@ -70,13 +70,10 @@ revo 0.5.0: recipe
     recipe add *            1 sub-command.
 ```
 
-An application recipe can be stored on any server but in order to create an application, you need a copy of the recipe in the local repo.
-
-Let's fetch a basic recipe from github:
+An application recipe can be stored on any server but in order to create an application, you need a copy of the recipe in the local repo. Let's fetch a basic recipe from github:
 
 ```
 revo 0.5.16: recipe pull https://raw.githubusercontent.com/clonq/revo-recipes/master/hello-world.yaml
-Fetching recipe from https://raw.githubusercontent.com/clonq/revo-recipes/master/hello-world.yaml
 recipe hello-world downloaded to local repo
 ```
 
@@ -139,6 +136,9 @@ MacBook:/revo/demo revo-user$ ./myapp
   revo:container piggyback websocket server started +1ms
 
 ```
+
+Load [http://localhost:3000](http://localhost:3000) in your browser.
+
 
 ---
 
