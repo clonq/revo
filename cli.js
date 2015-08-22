@@ -102,15 +102,19 @@ var recipe = {
             var rows = [];
             recipes.forEach(function(recipeName){
                 var recipe = repoService.recipe.load(recipeName);
+                recipe.description = recipe.description || '';
                 recipe.platform = recipe.platform || { type: 'cli'};
                 recipe.author = recipe.author || 'unknown';
-                var title = S(recipe.title).truncate(50).s;
+                var name = recipe.name || recipeName;
                 var version = S(recipe.version).truncate(8).s;
                 var platform = S(recipe.platform.type).truncate(3).s;
                 var author = S(recipe.author).truncate(10).s;
-                rows.push([title, version, platform, author]);
+                var description = S(recipe.description).truncate(50).s;
+                rows.push([name, version, platform, author, description]);
             })
-            util.table(rows, ['Recipe Name', 'Version', 'Platform', 'Author']);
+            this.log('');
+            util.table(rows, ['Recipe Name', 'Version', 'Platform', 'Author', 'Description']);
+            this.log('');
         } else {
             this.log('There are no recipes in the local repo');
         }
