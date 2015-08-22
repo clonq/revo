@@ -52,7 +52,11 @@ var app = {
                 }, function(err){
                     self.log(ERROR(err));
                     cb();
-                });
+                })
+                .catch(function(err){
+                    self.log(ERROR(err));
+                    cb();
+                })
             } else {
                 this.log(ERROR(recipe, 'recipe is not available either in the local repo or the central hub'));
                 cb();
