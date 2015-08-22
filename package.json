@@ -10,8 +10,8 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "prestart": "npm install",
-    "demo": "DEBUG=revo:* node revo create test -fr login && cd repo/apps/test && ./test"
+    "!prestart": "npm install",
+    "!demo": "DEBUG=revo:* node revo create helloworld -fr hello-world && cd repo/apps/helloworld && ./helloworld"
   },
   "dependencies": {
     "adm-zip": "^0.4.7",

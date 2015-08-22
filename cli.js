@@ -125,6 +125,17 @@ var recipe = {
         }
         cb();
     },
+    pull: function(args, cb){
+        var self = this;
+        this.log('Fetching recipe from', args.url);
+        repoService.recipe.download(args.url)
+        .then(function(recipe){
+            self.log(recipe.name, 'downloaded to local repo');
+            cb();
+        }, function(){
+            cb();
+        })
+    },
     search: function(args, cb){
         this.log('TODO: search recipe...');
         cb();
@@ -161,6 +172,7 @@ vantage.command('app package <app_name>', 'extract <app_name> from the local rep
 // recipe command group
 vantage.command('recipe list', 'Get a list of local recipes').action(recipe.list);
 vantage.command('recipe load <recipe>', 'Make <recipe> the current source for app creation, deployment, etc').action(recipe.load);
+vantage.command('recipe pull <url>', 'Fetch a recipe from <url> to local repo').action(recipe.pull);
 vantage.command('recipe search <recipe>', 'Search for <recipe> in local and central repos').action(recipe.search);
 vantage.command('recipe show <recipe>', 'Show <recipe> source').action(recipe.show);
 vantage.command('recipe add component <component>', 'Add <component> to current recipe').action(recipe.components.add);

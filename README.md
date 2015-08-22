@@ -59,8 +59,9 @@ revo 0.5.0: recipe
 
   Commands:
 
-    recipe load <recipe>    Make <recipe> the current source for app creation, deployment, etc
     recipe list             Get a list of local recipes
+    recipe load <recipe>    Make <recipe> the current source for app creation, deployment, etc
+    recipe pull <url>       Fetch a recipe from <url> to local repo
     recipe search <recipe>  Search for <recipe> in local and central repos
     recipe show <recipe>    Show <recipe> source
 
@@ -74,10 +75,12 @@ An application recipe can be stored on any server but in order to create an appl
 Let's fetch a basic recipe from github:
 
 ```
-
+revo 0.5.16: recipe pull https://raw.githubusercontent.com/clonq/revo-recipes/master/hello-world.yaml
+Fetching recipe from https://raw.githubusercontent.com/clonq/revo-recipes/master/hello-world.yaml
+recipe hello-world downloaded to local repo
 ```
 
-Type `recipe list` to show a list of available recipes avaiable in your local repository:
+Type `recipe list` to show the list of recipes avaiable in your local repository:
 
 ```
 revo 0.5.0: recipe list
@@ -106,14 +109,38 @@ Application Name  Repository
 myapp             local
 ```
 
-The app is now available in the local repo. To retrieve it from the repo just type `app package`:
+The app is now available in the local repo. To retrieve the app from the repository and package it as a standalone node.js application, use `app package`:
 
 ```
 revo 0.5.0: app package myapp
 myapp has been packaged to /revo/demo/myapp.zip
 ```
+The app is now available as a zip file in your current directory. Exit revo, unzip the new app in the directory of your choice and run the app:
+
+```
+revo 0.5.0: exit
+See you soon
+MacBook:/revo/demo revo-user$ ls -al
+...
+-rw-r--r--   1 revo-user  staff   9.1M 22 Aug 11:42 myapp.zip
+...
+MacBook:/revo/demo revo-user$ tar xf myapp.zip
+MacBook:/revo/demo revo-user$ cd myapp
+MacBook:/revo/demo revo-user$ ./myapp
+
+> myapp@1.0.0 start /revo/demo/myapp
+> DEBUG=revo:* ./container/run
+
+  revo:container web server v. 1.0.0 started on port 3000 +0ms
+  revo:container Initializing components +6ms
+  revo:container [dummy_bootstrap]	 loaded +2ms
+  revo:container registering handler for revo/hello-world:load +1ms
+  revo:container [dummy_bootstrap]	 initialized +0ms
+  revo:container piggyback websocket server started +1ms
+
+```
 
 ---
 
 ![](https://travis-ci.org/clonq/revo.svg?branch=master)
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/clonq/revo/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+<!--[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/clonq/revo/trend.png)](https://bitdeli.com/free "Bitdeli Badge")-->
