@@ -139,6 +139,65 @@ MacBook:/revo/demo revo-user$ ./myapp
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to see the Hello World web app.
 
+Recipes
+===
+In the REVO world, you use recipes to create new applications. Recipes are .yaml files that describe how an application should be assembled from components. Let's have a look at the hello-world recipe. At revo prompt type `recipe show hello-world`:
+
+```
+revo 0.5.0: recipe show hello-world
+{
+    "name": "hello-world",
+    "description": "basic Hello World recipe",
+    "version": "1.0.0",
+    "author": "revo",
+    "platform": {
+        "type": "web",
+        "theme": {
+            "name": "initializr/bootstrap",
+            "url": "http://www.initializr.com/builder?boot-hero&jquerymin&h5bp-iecond&h5bp-chromeframe&h5bp-analytics&h5bp-favicon&h5bp-appletouchicons&modernizrrespond&izr-emptyscript&boot-css&boot-scripts",
+            "zip_path": "initializr",
+            "placeholders": [
+                {
+                    "main": ".jumbotron"
+                },
+                {
+                    "login": "#navbar form"
+                }
+            ]
+        }
+    },
+    "components": [
+        {
+            "clonq/revo-ui-bootstrap": {
+                "type": "web",
+                "repo": "github"
+            }
+        },
+        {
+            "revo/hello-world": {
+                "type": "web"
+            }
+        }
+    ],
+    "config": {
+        "clonq/revo-ui-bootstrap": {
+            "load": "revo/hello-world",
+            "remove": "nav"
+        }
+    }
+}
+```
+The important sections in a recipe are: `platform`, `components` and `config`.
+
+###Platform 
+The `platform` key in a revo recipe describes and optionally configures some high level aspects of the application. The `type` sub-key informs the revo application generator module about the environment the generated application will run on and can have two values `cli` or `web`.
+
+For web applications, a second `theme` sub-key defines the web theme or the web page layout. If the theme was created on developer's machine and thus already available in the local repo, a `name` key is enough to retrieve it and generate the web app page layout. The theme could be stored anywhere though and referenced via the `url` key. The hello-world recipe leverages [Initializr](http://www.initializr.com/)'s Bootstrap template.
+
+When the `url` is present, revo downloads the theme locally, unpacks it and registers the template with the local repo for future references.
+
+The `placeholders` key defines DOM elements that can be used by web components to inject their content into the web page. The hello-world component for example overwrites Bootstrap's original content of the .jumbotron div element.
+
 
 ---
 

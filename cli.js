@@ -144,7 +144,7 @@ var recipe = {
         cb();
     },
     show: function(args, cb){
-        this.log('TODO: show recipe...');
+        repoService.recipe.show(args.recipe);
         cb();
     },
     components: {
