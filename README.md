@@ -189,8 +189,8 @@ revo 0.5.0: recipe show hello-world
 ```
 The important sections in a recipe are: `platform`, `components` and `config`.
 
-Platform
----
+<h4>Platform</h4>
+
 
 The `platform` key in a revo recipe describes and optionally configures some high level aspects of the application. The `type` sub-key informs the revo application generator module about the environment the generated application will run on and can have two values `cli` or `web`.
 
@@ -200,8 +200,8 @@ When the `url` is present, revo downloads the theme locally, unpacks it and regi
 
 The `placeholders` key defines DOM elements that can be used by web components to inject their content into the web page. The hello-world component for example overwrites Bootstrap's original content of the .jumbotron div element.
 
-Components
----
+<h4>Components</h4>
+
 
 The `components` section is a list of component entries. Each entry has a `name` key, a `repo` key identifying where the component should be fetched from and optionaly a `type` key.
 
@@ -212,10 +212,14 @@ The repo can be either the keyword `github` or an url. Revo will try to download
 The type of a component can be either `common` or `web`. If no type is specified, `common` will be assumed.
 
 
-Config
----
+<h4>Config</h4>
+
 
 The `config` section holds configuration data specific to each component. For example, the hello-world recipe configures a UI bootstrap component to automatically load the revo/hello-world web component everytime the user hits application's main page and to remove the *nav* element originally present in the bootstrap html template.
+
+Components
+===
+Components are the main ingredient in a revo recipe. They are regular node.js modules that follow a certain design pattern in order to communicate with the other components within a revo runtime container. Components can of one of two types: `common` or `web`. Common components don't have a UI, web commonents are designed to live in a web page.
 
 
 ---
