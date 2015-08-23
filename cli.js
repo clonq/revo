@@ -114,6 +114,19 @@ var app = {
         this.log(ERROR('not implemented'));
         cb();
     },
+    remove: function(args, cb){
+        // this.log(ERROR('not implemented'));
+        // cb();
+        var self = this;
+        repoService.app.remove(args.app_name)
+        .then(function(recipe){
+            self.log(args.app_name, 'app removed from local repo');
+            cb();
+        }, function(err){
+            self.log(ERROR(err));
+            cb();
+        });
+    }
 }
 
 var recipe = {
@@ -216,7 +229,7 @@ var recipe = {
         if(!!recipeName) {
             repoService.recipe.remove(recipeName)
             .then(function(recipe){
-                self.log(common.recipe.name, 'recipe removed');
+                self.log(common.recipe.name, 'recipe removed from local repo');
                 cb();
             }, function(err){
                 self.log(ERROR(err));
@@ -251,6 +264,7 @@ vantage.command('app list', 'Get a list of local apps').action(app.list);
 // vantage.command('app run <app_name>', 'Run an existing app on the local host').action(app.run);
 // vantage.command('app search <app_name>', 'Search for <app> in local and central repos').action(app.search);
 vantage.command('app package <app_name>', 'extract <app_name> from the local repo into a zip file').action(app.package);
+vantage.command('app remove <app_name>', 'Delete <app_name> from the local repo').action(app.remove);
 
 // recipe command group
 vantage.command('recipe create <recipe_name>', 'Create a new empty recipe and make it current').action(recipe.create);
