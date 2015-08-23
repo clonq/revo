@@ -30,7 +30,7 @@ var component = {
             util.table(rows, ['Component Name', 'Version', 'Type', 'Author', 'Description']);
             this.log('');
         } else {
-            this.log('There are no components in the local repo');
+            this.log('There are no components in the local repo.');
         }
         cb();
     },
@@ -49,9 +49,9 @@ var app = {
             var recipeSrc = repoService.recipe.check(recipe);
             if(recipeSrc != 'unavailable') {
                 if(!!args.recipe) {
-                    this.log('Using', recipeSrc, 'recipe:', args.recipe);
+                    this.log('Using', recipeSrc, 'recipe:', args.recipe, '.');
                 } else {
-                    this.log('Using previously loaded recipe:', common.recipe);
+                    this.log('Using previously loaded recipe:', common.recipe, '.');
                 }
                 var opts = {
                     appName: appName,
@@ -62,7 +62,7 @@ var app = {
                 .generateApp(opts)
                 .then(function(recipe){
                     common.recipe = recipe;
-                    self.log(appName, 'app created in local repo');
+                    self.log(appName, 'app created in local repo.');
                     cb();
                 }, function(err){
                     self.log(ERROR(err));
@@ -73,12 +73,11 @@ var app = {
                     cb();
                 })
             } else {
-                this.log(ERROR(recipe, 'recipe is not available either in the local repo or the central hub'));
+                this.log(ERROR(recipe, 'recipe is not available either in the local repo or the central hub.'));
                 cb();
             }
         } else {
-            this.log(ERROR('Recipe not provided and no current recipe is available'));
-            this.log(INFO('Use "app create <app_name> <recipe>" or "recipe load <recipe>" to specify a recipe'));
+            this.log(ERROR('No current recipe. Create or load a recipe first.'));
             cb();
         }
     },
@@ -97,7 +96,7 @@ var app = {
             util.table(rows, ['Application Name', 'Repository']);
             this.log('');
         } else {
-            this.log('There are no apps in the local repo');
+            this.log('There are no apps in the local repo.');
         }
         cb();
     },
@@ -115,12 +114,10 @@ var app = {
         cb();
     },
     remove: function(args, cb){
-        // this.log(ERROR('not implemented'));
-        // cb();
         var self = this;
         repoService.app.remove(args.app_name)
         .then(function(recipe){
-            self.log(args.app_name, 'app removed from local repo');
+            self.log(args.app_name, 'app removed from local repo.');
             cb();
         }, function(err){
             self.log(ERROR(err));
@@ -134,7 +131,7 @@ var recipe = {
         var recipeName = args.recipe;
         common.recipe = repoService.recipe.load(recipeName);
         common.recipe.name = common.recipe.name || recipeName; //old recipes don't have a name key
-        this.log(recipeName, 'is now the current recipe');
+        this.log(recipeName, 'is now the current recipe.');
         cb();
     },
     list: function(args, cb){
@@ -157,7 +154,7 @@ var recipe = {
             util.table(rows, ['Recipe Name', 'Version', 'Platform', 'Author', 'Description']);
             this.log('');
         } else {
-            this.log('There are no recipes in the local repo');
+            this.log('There are no recipes in the local repo.');
         }
         cb();
     },
@@ -165,7 +162,7 @@ var recipe = {
         var self = this;
         repoService.recipe.download(args.url)
         .then(function(recipe){
-            self.log(recipe.name, 'downloaded to local repo');
+            self.log(recipe.name, 'downloaded to local repo.');
             cb();
         }, function(){
             self.log(ERROR(err));
@@ -183,7 +180,7 @@ var recipe = {
         if(!!recipeName) {
             repoService.recipe.show(recipeName);
         } else {
-            this.log(ERROR('Recipe not provided and no current recipe is available'));
+            this.log(ERROR('Recipe not provided and no current recipe is available.'));
         }
         cb();
     },
@@ -193,7 +190,7 @@ var recipe = {
         //todo: check for name conflicts
         repoService.recipe.save(common.recipe)
         .then(function(recipe){
-            self.log(common.recipe.name, 'recipe created in local repo');
+            self.log(common.recipe.name, 'recipe created in local repo.');
             self.log(JSON.stringify(common.recipe, null, 4));
             cb();
         }, function(err){
@@ -229,7 +226,8 @@ var recipe = {
         if(!!recipeName) {
             repoService.recipe.remove(recipeName)
             .then(function(recipe){
-                self.log(common.recipe.name, 'recipe removed from local repo');
+                self.log(common.recipe.name, 'recipe removed from local repo.');
+                if(!!common.recipe) delete common.recipe;
                 cb();
             }, function(err){
                 self.log(ERROR(err));
@@ -242,9 +240,16 @@ var recipe = {
     },
     components: {
         add: function(args, cb) {
-            this.log(ERROR('not implemented'));
+            if(!!common.recipe) {
+                // common.recipe.components = common.recipe.components || {};
+                // var componentName = args.component;
+
+                this.log('todo: adding component', args.component);
+            } else {
+                this.log(ERROR('No current recipe. Create or load a recipe first.'));
+            } 
             cb();
-        }    
+        }
     }
 }
 
