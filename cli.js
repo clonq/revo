@@ -226,7 +226,7 @@ var recipe = {
         if(!!recipeName) {
             repoService.recipe.remove(recipeName)
             .then(function(recipe){
-                self.log(common.recipe.name, 'recipe removed from local repo.');
+                self.log(recipeName, 'recipe removed from local repo.');
                 if(!!common.recipe) delete common.recipe;
                 cb();
             }, function(err){
@@ -240,15 +240,27 @@ var recipe = {
     },
     components: {
         add: function(args, cb) {
+            var self = this;
             if(!!common.recipe) {
-                // common.recipe.components = common.recipe.components || {};
-                // var componentName = args.component;
-
-                this.log('todo: adding component', args.component);
+                common.recipe.components = common.recipe.components || [];
+                var componentName = args.component;
+                var json = repoService.component.getJson(componentName);
+                var isCommon = (Object.keys(json).length > 0) || (json.type == 'common');
+                var componentType = isCommon ? 'common': 'web';
+                var component = { name: componentName, type: componentType }
+                common.recipe.components.push(component);
+                repoService.recipe.save(common.recipe)
+                .then(function(recipe){
+                    self.log(componentName, 'component added to', common.recipe.name);
+                    cb();
+                }, function(err){
+                    self.log(ERROR(err));
+                    cb();
+                })
             } else {
                 this.log(ERROR('No current recipe. Create or load a recipe first.'));
+                cb();
             } 
-            cb();
         }
     }
 }
