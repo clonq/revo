@@ -35,7 +35,7 @@ var component = {
         cb();
     },
     search: function(args, cb){
-        this.log('TODO: search component...');
+        this.log(ERROR('not implemented'));
         cb();
     }
 }
@@ -107,19 +107,19 @@ var app = {
         cb();
     },
     run: function(args, cb) {
-        this.log('TODO: running', args.app);
+        this.log(ERROR('not implemented'));
         cb();
     },
     search: function(args, cb){
-        this.log('TODO: search app...');
+        this.log(ERROR('not implemented'));
         cb();
     },
 }
 
 var recipe = {
     load: function(args, cb) {
-        this.log('TODO: using recipe', args.recipe);
-        common.recipe = args.recipe;
+        this.log(ERROR('not implemented'));
+        // common.recipe = args.recipe;
         cb();
     },
     list: function(args, cb){
@@ -201,12 +201,31 @@ var recipe = {
             })
         } else {
             this.log(ERROR('No current recipe. Create or load a recipe first.'))
+            cb();
         }
-        cb();
+    },
+    remove: function(args, cb){
+        var self = this;
+        var recipeName;
+        if(args.recipe) recipeName = args.recipe;
+        else if(!!common.recipe) recipeName = common.recipe.name;
+        if(!!recipeName) {
+            repoService.recipe.remove(recipeName)
+            .then(function(recipe){
+                self.log(common.recipe.name, 'recipe removed');
+                cb();
+            }, function(err){
+                self.log(ERROR(err));
+                cb();
+            })
+        } else {
+            this.log(ERROR('No current recipe. Create or load a recipe first.'));
+            cb();
+        }
     },
     components: {
         add: function(args, cb) {
-            this.log('adding', args.component, 'to current recipe');
+            this.log(ERROR('not implemented'));
             cb();
         }    
     }
@@ -236,6 +255,7 @@ vantage.command('recipe load <recipe>', 'Make <recipe> the current source for ap
 vantage.command('recipe pull <url>', 'Fetch a recipe from <url> to local repo').action(recipe.pull);
 // vantage.command('recipe search <recipe>', 'Search for <recipe> in local and central repos').action(recipe.search);
 vantage.command('recipe show [recipe]', 'Show [recipe] or current recipe source').action(recipe.show);
+vantage.command('recipe remove [recipe]', 'Delete the current or the specified [recipe] from the local repo').action(recipe.remove);
 vantage.command('recipe set <key> <value>', 'Set recipe metadata. Used to set recipe name, description and version').action(recipe.set);
 vantage.command('recipe add component <component>', 'Add <component> to current recipe').action(recipe.components.add);
 
