@@ -15,7 +15,23 @@ var common = {};
 
 var component = {
     list: function(args, cb){
-        this.log('TODO: component list...');
+        var components = repoService.component.list();
+        if(!!components.length) {
+            var rows = [];
+            components.forEach(function(component){
+                var name = component.name;
+                var version = S(component.version).truncate(8).s;
+                var type = S(component.type).truncate(6).s;
+                var author = S(component.author).truncate(10).s;
+                var description = S(component.description).truncate(50).s;
+                rows.push([name, version, type, author, description]);
+            })
+            this.log('');
+            util.table(rows, ['Component Name', 'Version', 'Type', 'Author', 'Description']);
+            this.log('');
+        } else {
+            this.log('There are no components in the local repo');
+        }
         cb();
     },
     search: function(args, cb){
@@ -78,7 +94,9 @@ var app = {
             apps.forEach(function(appName){
                 rows.push([appName, 'local']);
             })
+            this.log('');
             util.table(rows, ['Application Name', 'Repository']);
+            this.log('');
         } else {
             this.log('There are no apps in the local repo');
         }
@@ -166,23 +184,23 @@ vantage
 .command('app create <app_name> [recipe]', 'Create a new app <app_name> in the local repo')
 .option('-f, --force ', 'force existing app ovewrite')
 .action(app.create);
-vantage.command('app deploy <app_name>', 'Deploy a previously created app').action(app.deploy);
+// vantage.command('app deploy <app_name>', 'Deploy a previously created app').action(app.deploy);
 vantage.command('app list', 'Get a list of local apps').action(app.list);
-vantage.command('app run <app_name>', 'Run an existing app on the local host').action(app.run);
-vantage.command('app search <app_name>', 'Search for <app> in local and central repos').action(app.search);
+// vantage.command('app run <app_name>', 'Run an existing app on the local host').action(app.run);
+// vantage.command('app search <app_name>', 'Search for <app> in local and central repos').action(app.search);
 vantage.command('app package <app_name>', 'extract <app_name> from the local repo into a zip file').action(app.package);
 
 // recipe command group
 vantage.command('recipe list', 'Get a list of local recipes').action(recipe.list);
 vantage.command('recipe load <recipe>', 'Make <recipe> the current source for app creation, deployment, etc').action(recipe.load);
 vantage.command('recipe pull <url>', 'Fetch a recipe from <url> to local repo').action(recipe.pull);
-vantage.command('recipe search <recipe>', 'Search for <recipe> in local and central repos').action(recipe.search);
+// vantage.command('recipe search <recipe>', 'Search for <recipe> in local and central repos').action(recipe.search);
 vantage.command('recipe show <recipe>', 'Show <recipe> source').action(recipe.show);
 vantage.command('recipe add component <component>', 'Add <component> to current recipe').action(recipe.components.add);
 
 // component command group
 vantage.command('component list', 'Get a list of local components').action(component.list);
-vantage.command('component search <component>', 'Search for <component> in local and central repos').action(component.search);
+// vantage.command('component search <component>', 'Search for <component> in local and central repos').action(component.search);
 
 repoService.init();
 
