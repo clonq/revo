@@ -118,8 +118,10 @@ var app = {
 
 var recipe = {
     load: function(args, cb) {
-        this.log(ERROR('not implemented'));
-        // common.recipe = args.recipe;
+        var recipeName = args.recipe;
+        common.recipe = repoService.recipe.load(recipeName);
+        common.recipe.name = common.recipe.name || recipeName; //old recipes don't have a name key
+        this.log(recipeName, 'is now the current recipe');
         cb();
     },
     list: function(args, cb){
@@ -162,8 +164,10 @@ var recipe = {
         cb();
     },
     show: function(args, cb){
-        if(!!common.recipe) {
-            var recipeName = args.recipe || common.recipe.name;
+        var recipeName;
+        if(args.recipe) recipeName = args.recipe;
+        else if(!!common.recipe) recipeName = common.recipe.name;
+        if(!!recipeName) {
             repoService.recipe.show(recipeName);
         } else {
             this.log(ERROR('Recipe not provided and no current recipe is available'));
