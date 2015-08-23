@@ -73,7 +73,7 @@ revo 0.5.0: recipe
 An application recipe can be stored on any server but in order to create an application, you need a copy of the recipe in the local repo. Let's fetch a basic recipe from github:
 
 ```
-revo 0.5.16: recipe pull https://raw.githubusercontent.com/clonq/revo-recipes/master/hello-world.yaml
+revo 0.5.0: recipe pull https://raw.githubusercontent.com/clonq/revo-recipes/master/hello-world.yaml
 recipe hello-world downloaded to local repo
 ```
 
@@ -227,13 +227,13 @@ Revo components are designed to be reused in any revo-generated application. The
 
 Everyone is encouraged to write revo components following the [revo design principles for component development]().
 
-Here are some components I developed for the revo platform: [revo-config](https://github.com/clonq/revo-config),
-[revo-config-ui](https://github.com/clonq/revo-config-ui), 
-[revo-ui-bootstrap](https://github.com/clonq/revo-ui-bootstrap), 
-[revo-webbridge](https://github.com/clonq/revo-webbridge), 
-[revo-profile-ui](https://github.com/clonq/revo-profile-ui), 
-[revo-profile](https://github.com/clonq/revo-profile), 
-[revo-notification](https://github.com/clonq/revo-notification).
+Here are some components I developed for the revo platform: [config](https://github.com/clonq/revo-config),
+[config-ui](https://github.com/clonq/revo-config-ui), 
+[ui-bootstrap](https://github.com/clonq/revo-ui-bootstrap), 
+[webbridge](https://github.com/clonq/revo-webbridge), 
+[profile-ui](https://github.com/clonq/revo-profile-ui), 
+[profile](https://github.com/clonq/revo-profile), 
+[notification](https://github.com/clonq/revo-notification).
 
 Also check out my [revo recipes repository](https://github.com/clonq/revo-recipes).
 

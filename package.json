@@ -1,6 +1,6 @@
 {
   "name": "revo",
-  "version": "0.5.22",
+  "version": "0.5.23",
   "description": "assemble apps from components - no coding required - almost :)",
   "repository": "clonq/revo",
   "bin": {

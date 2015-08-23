@@ -165,6 +165,22 @@ var recipe = {
         repoService.recipe.show(args.recipe);
         cb();
     },
+    new: function(args, cb) {
+        common.recipeName = args.recipe_name;
+        common.recipe = { name:args.recipe_name, version:'0.1.0', description:'' };
+        this.log('new recipe created');
+        this.log(JSON.stringify(common.recipe, null, 4));
+        cb();        
+    },
+    set: function(args, cb) {
+        if(!!common.recipe) {
+            common.recipe[args.key] = args.value;
+            this.log(args.key, 'set to', args.value);
+        } else {
+            this.log(ERROR('No current recipe. Create or load a recipe first.'))
+        }
+        cb();
+    },
     components: {
         add: function(args, cb) {
             this.log('adding', args.component, 'to current recipe');
@@ -191,11 +207,13 @@ vantage.command('app list', 'Get a list of local apps').action(app.list);
 vantage.command('app package <app_name>', 'extract <app_name> from the local repo into a zip file').action(app.package);
 
 // recipe command group
+vantage.command('recipe new <recipe_name>', 'Create a new empty recipe and make it current').action(recipe.new);
 vantage.command('recipe list', 'Get a list of local recipes').action(recipe.list);
 vantage.command('recipe load <recipe>', 'Make <recipe> the current source for app creation, deployment, etc').action(recipe.load);
 vantage.command('recipe pull <url>', 'Fetch a recipe from <url> to local repo').action(recipe.pull);
 // vantage.command('recipe search <recipe>', 'Search for <recipe> in local and central repos').action(recipe.search);
 vantage.command('recipe show <recipe>', 'Show <recipe> source').action(recipe.show);
+vantage.command('recipe set <key> <value>', 'Set recipe metadata. Used to set recipe name, description and version').action(recipe.set);
 vantage.command('recipe add component <component>', 'Add <component> to current recipe').action(recipe.components.add);
 
 // component command group
