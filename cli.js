@@ -44,7 +44,7 @@ var app = {
     create: function(args, cb) {
         var self = this;
         var appName = args.app_name;
-        var recipe = args.recipe || common.recipeName;
+        var recipe = args.recipe || common.recipe.name;
         if(!!recipe) {
             var recipeSrc = repoService.recipe.check(recipe);
             if(recipeSrc != 'unavailable') {
@@ -61,7 +61,6 @@ var app = {
                 appService
                 .generateApp(opts)
                 .then(function(recipe){
-                    common.recipeName = recipe;
                     common.recipe = recipe;
                     self.log(appName, 'app created in local repo');
                     cb();
@@ -78,7 +77,7 @@ var app = {
                 cb();
             }
         } else {
-            this.log(ERROR('Recipe not provided and no previously loaded recipe is available'));
+            this.log(ERROR('Recipe not provided and no current recipe is available'));
             this.log(INFO('Use "app create <app_name> <recipe>" or "recipe load <recipe>" to specify a recipe'));
             cb();
         }
@@ -154,6 +153,7 @@ var recipe = {
             self.log(recipe.name, 'downloaded to local repo');
             cb();
         }, function(){
+            self.log(ERROR(err));
             cb();
         })
     },
@@ -162,20 +162,43 @@ var recipe = {
         cb();
     },
     show: function(args, cb){
-        repoService.recipe.show(args.recipe);
+        if(!!common.recipe) {
+            var recipeName = args.recipe || common.recipe.name;
+            repoService.recipe.show(recipeName);
+        } else {
+            this.log(ERROR('Recipe not provided and no current recipe is available'));
+        }
         cb();
     },
-    new: function(args, cb) {
-        common.recipeName = args.recipe_name;
+    create: function(args, cb) {
+        var self = this;
         common.recipe = { name:args.recipe_name, version:'0.1.0', description:'' };
-        this.log('new recipe created');
-        this.log(JSON.stringify(common.recipe, null, 4));
-        cb();        
+        //todo: check for name conflicts
+        repoService.recipe.save(common.recipe)
+        .then(function(recipe){
+            self.log(common.recipe.name, 'recipe created in local repo');
+            self.log(JSON.stringify(common.recipe, null, 4));
+            cb();
+        }, function(err){
+            self.log(ERROR(err));
+            cb();
+        })
     },
     set: function(args, cb) {
+        var self = this;
         if(!!common.recipe) {
+            var oldName;
+            if(args.key == 'name') oldName = common.recipe.name;
             common.recipe[args.key] = args.value;
-            this.log(args.key, 'set to', args.value);
+            repoService.recipe.save(common.recipe)
+            .then(function(recipe){
+                self.log(args.key, 'set to', args.value);
+                if(!!oldName) repoService.recipe.remove(oldName);
+                cb();
+            }, function(err){
+                self.log(ERROR(err));
+                cb();
+            })
         } else {
             this.log(ERROR('No current recipe. Create or load a recipe first.'))
         }
@@ -207,12 +230,12 @@ vantage.command('app list', 'Get a list of local apps').action(app.list);
 vantage.command('app package <app_name>', 'extract <app_name> from the local repo into a zip file').action(app.package);
 
 // recipe command group
-vantage.command('recipe new <recipe_name>', 'Create a new empty recipe and make it current').action(recipe.new);
+vantage.command('recipe create <recipe_name>', 'Create a new empty recipe and make it current').action(recipe.create);
 vantage.command('recipe list', 'Get a list of local recipes').action(recipe.list);
 vantage.command('recipe load <recipe>', 'Make <recipe> the current source for app creation, deployment, etc').action(recipe.load);
 vantage.command('recipe pull <url>', 'Fetch a recipe from <url> to local repo').action(recipe.pull);
 // vantage.command('recipe search <recipe>', 'Search for <recipe> in local and central repos').action(recipe.search);
-vantage.command('recipe show <recipe>', 'Show <recipe> source').action(recipe.show);
+vantage.command('recipe show [recipe]', 'Show [recipe] or current recipe source').action(recipe.show);
 vantage.command('recipe set <key> <value>', 'Set recipe metadata. Used to set recipe name, description and version').action(recipe.set);
 vantage.command('recipe add component <component>', 'Add <component> to current recipe').action(recipe.components.add);
 
