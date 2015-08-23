@@ -4,14 +4,14 @@ REVO
 REVO is an open platform for building, deploying and running node.js applications. It allows programmers to assemble complex apps in minutes by reusing existing components.
 
 Install REVO
-===
+---
 
 ```
 $ sudo npm install -g revo
 ```
 
 Run REVO
-===
+---
 ```
 $ sudo revo
 revo 0.5.0: 
@@ -140,7 +140,7 @@ MacBook:/revo/demo revo-user$ ./myapp
 Open <http://localhost:3000> in your browser to see the Hello World web app.
 
 Recipes
-===
+---
 In the REVO world, you use recipes to create new applications. Recipes are .yaml files that describe how an application should be assembled from components. Let's have a look at the hello-world recipe. At revo prompt type `recipe show hello-world`:
 
 ```
@@ -218,8 +218,14 @@ The type of a component can be either `common` or `web`. If no type is specified
 The `config` section holds configuration data specific to each component. For example, the hello-world recipe configures a UI bootstrap component to automatically load the revo/hello-world web component everytime the user hits application's main page and to remove the *nav* element originally present in the bootstrap html template.
 
 Components
-===
-Components are the main ingredient in a revo recipe. They are regular node.js modules that follow a certain design pattern in order to communicate with the other components within a revo runtime container. Components can of one of two types: `common` or `web`. Common components don't have a UI, web commonents are designed to live in a web page.
+---
+Components are the main ingredient of a revo recipe. They are regular node.js modules that follow a certain design pattern in order to communicate with the other components within a revo runtime container. Components can of one of two types: `common` or `web`. Common components don't have a UI, web components are designed to live in a web page.
+
+Components can be stored anywhere on the web. When declared in a recipe, the revo engine retrieves them from the specified url and caches them in the local repo. When the application is assembled, the declared components are copied to the application directory and the application configuration is updated to contain component-specific config.
+
+Revo components are designed to be reused in any revo-generated application. The recipe for a new application simply lists the required components and their optional configuration elements. The rest is taken care by the evant-based communication mechanism leveraged by the revo runtime.
+
+Everyone is encouraged to write revo components following the [revo design principles for component development]() (to be published on project's wiki)
 
 
 ---
