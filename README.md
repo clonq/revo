@@ -225,8 +225,17 @@ Components can be stored anywhere on the web. When declared in a recipe, the rev
 
 Revo components are designed to be reused in any revo-generated application. The recipe for a new application simply lists the required components and their optional configuration elements. The rest is taken care by the evant-based communication mechanism leveraged by the revo runtime.
 
-Everyone is encouraged to write revo components following the [revo design principles for component development]() (to be published on project's wiki)
+Everyone is encouraged to write revo components following the [revo design principles for component development]().
 
+Here are some components I developed for the revo platform: [revo-config](https://github.com/clonq/revo-config),
+[revo-config-ui](https://github.com/clonq/revo-config-ui), 
+[revo-ui-bootstrap](https://github.com/clonq/revo-ui-bootstrap), 
+[revo-webbridge](https://github.com/clonq/revo-webbridge), 
+[revo-profile-ui](https://github.com/clonq/revo-profile-ui), 
+[revo-profile](https://github.com/clonq/revo-profile), 
+[revo-notification](https://github.com/clonq/revo-notification).
+
+Also check out my [revo recipes repository](https://github.com/clonq/revo-recipes).
 
 ---
 
