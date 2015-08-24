@@ -37,6 +37,17 @@ var component = {
     search: function(args, cb){
         this.log(ERROR('not implemented'));
         cb();
+    },
+    pull: function(args, cb){
+        var self = this;
+        repoService.component.fetch(args.url)
+        .then(function(component){
+            // self.log(args.name, 'downloaded to local repo.');
+            cb();
+        }, function(){
+            self.log(ERROR(err));
+            cb();
+        })
     }
 }
 
@@ -247,7 +258,8 @@ var recipe = {
                 var json = repoService.component.getJson(componentName);
                 var isCommon = (Object.keys(json).length > 0) || (json.type == 'common');
                 var componentType = isCommon ? 'common': 'web';
-                var component = { name: componentName, type: componentType }
+                var component = {};
+                component[componentName] = { type: componentType };
                 common.recipe.components.push(component);
                 repoService.recipe.save(common.recipe)
                 .then(function(recipe){
@@ -296,6 +308,7 @@ vantage.command('recipe add component <component>', 'Add <component> to current 
 
 // component command group
 vantage.command('component list', 'Get a list of local components').action(component.list);
+vantage.command('component pull <url>', 'Fetch a component from <url> to local repo').action(component.pull);
 // vantage.command('component search <component>', 'Search for <component> in local and central repos').action(component.search);
 
 repoService.init();
