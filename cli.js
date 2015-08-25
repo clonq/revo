@@ -40,11 +40,11 @@ var component = {
     },
     pull: function(args, cb){
         var self = this;
-        repoService.component.fetch(args.url)
-        .then(function(component){
-            // self.log(args.name, 'downloaded to local repo.');
+        repoService.component.download(args.url)
+        .then(function(componentName){
+            self.log(componentName, 'component downloaded to local repo.');
             cb();
-        }, function(){
+        }, function(err){
             self.log(ERROR(err));
             cb();
         })
