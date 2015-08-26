@@ -138,9 +138,9 @@ var app = {
 }
 
 var recipe = {
-    load: function(args, cb) {
+    use: function(args, cb) {
         var recipeName = args.recipe;
-        common.recipe = repoService.recipe.load(recipeName);
+        common.recipe = repoService.recipe.use(recipeName);
         common.recipe.name = common.recipe.name || recipeName; //old recipes don't have a name key
         this.log(recipeName, 'is now the current recipe.');
         cb();
@@ -150,12 +150,12 @@ var recipe = {
         if(!!recipes.length) {
             var rows = [];
             recipes.forEach(function(recipeName){
-                var recipe = repoService.recipe.load(recipeName);
+                var recipe = repoService.recipe.use(recipeName);
                 recipe.description = recipe.description || '';
                 recipe.platform = recipe.platform || { type: 'cli'};
                 recipe.author = recipe.author || 'unknown';
                 var name = recipe.name || recipeName;
-                var version = S(recipe.version).truncate(8).s;
+                var version = !!recipe.version ? S(recipe.version).truncate(8).s : '?';
                 var platform = S(recipe.platform.type).truncate(3).s;
                 var author = S(recipe.author).truncate(10).s;
                 var description = S(recipe.description).truncate(50).s;
@@ -175,7 +175,18 @@ var recipe = {
         .then(function(recipe){
             self.log(recipe.name, 'downloaded to local repo.');
             cb();
-        }, function(){
+        }, function(err){
+            self.log(ERROR(err));
+            cb();
+        })
+    },
+    load: function(args, cb){
+        var self = this;
+        repoService.recipe.load(args.filename)
+        .then(function(recipe){
+            self.log(recipe.name, 'recipe is now available in the local repo.');
+            cb();
+        }, function(err){
             self.log(ERROR(err));
             cb();
         })
@@ -298,7 +309,8 @@ vantage.command('app remove <app_name>', 'Delete <app_name> from the local repo'
 // recipe command group
 vantage.command('recipe create <recipe_name>', 'Create a new empty recipe and make it current').action(recipe.create);
 vantage.command('recipe list', 'Get a list of local recipes').action(recipe.list);
-vantage.command('recipe load <recipe>', 'Make <recipe> the current source for app creation, deployment, etc').action(recipe.load);
+vantage.command('recipe use <recipe>', 'Make <recipe> the current source for app creation, deployment, etc').action(recipe.use);
+vantage.command('recipe load <filename>', 'Load a local <recipe> file into the local repo').action(recipe.load);
 vantage.command('recipe pull <url>', 'Fetch a recipe from <url> to local repo').action(recipe.pull);
 // vantage.command('recipe search <recipe>', 'Search for <recipe> in local and central repos').action(recipe.search);
 vantage.command('recipe show [recipe]', 'Show [recipe] or current recipe source').action(recipe.show);
