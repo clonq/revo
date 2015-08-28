@@ -60,9 +60,9 @@ var app = {
             var recipeSrc = repoService.recipe.check(recipe);
             if(recipeSrc != 'unavailable') {
                 if(!!args.recipe) {
-                    this.log('Using', recipeSrc, 'recipe:', args.recipe, '.');
+                    this.log('Using', recipeSrc, 'recipe:', args.recipe);
                 } else {
-                    this.log('Using previously loaded recipe:', common.recipe, '.');
+                    this.log('Using previously loaded recipe:', common.recipe);
                 }
                 var opts = {
                     appName: appName,
@@ -112,8 +112,9 @@ var app = {
         cb();
     },
     package: function(args, cb) {
-        var zip = appService.packageApp({appName: args.app_name, destination: args.location});
-        this.log(args.app_name, 'has been packaged to', zip);
+console.log('::>', process.cwd());
+        // var zip = appService.packageApp({appName: args.app_name, destination: args.location});
+        // this.log(args.app_name, 'has been packaged to', zip);
         cb();
     },
     run: function(args, cb) {
