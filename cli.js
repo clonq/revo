@@ -112,9 +112,8 @@ var app = {
         cb();
     },
     package: function(args, cb) {
-console.log('::>', process.cwd());
-        // var zip = appService.packageApp({appName: args.app_name, destination: args.location});
-        // this.log(args.app_name, 'has been packaged to', zip);
+        var zip = appService.packageApp({appName: args.app_name, destination: args.location});
+        this.log(args.app_name, 'has been packaged to', zip);
         cb();
     },
     run: function(args, cb) {
