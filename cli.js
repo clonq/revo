@@ -289,6 +289,22 @@ var recipe = {
     }
 }
 
+var web = {
+    theme: {
+        load: function(args, cb){
+            var self = this;
+            repoService.web.theme.load(args.filename)
+            .then(function(theme){
+                self.log(theme, 'web theme is now available in the local repo.');
+                cb();
+            }, function(err){
+                self.log(ERROR(err));
+                cb();
+            })
+        }
+    }
+}
+
 // disable default vantage menu
 vantage.command('exit', 'Exits revo\'s interactive CLI.').action(function(args,cb){ this.log('See you soon'); process.exit() });
 vantage.command('repl').hidden().action(function(args,cb){cb()});
@@ -311,7 +327,7 @@ vantage.command('app remove <app_name>', 'Delete <app_name> from the local repo'
 vantage.command('recipe create <recipe_name>', 'Create a new empty recipe and make it current').action(recipe.create);
 vantage.command('recipe list', 'Get a list of local recipes').action(recipe.list);
 vantage.command('recipe use <recipe>', 'Make <recipe> the current source for app creation, deployment, etc').action(recipe.use);
-vantage.command('recipe load <filename>', 'Load a local <recipe> file into the local repo').action(recipe.load);
+vantage.command('recipe load <filename>', 'Load a local <filename> recipe into the local repo').action(recipe.load);
 vantage.command('recipe pull <url>', 'Fetch a recipe from <url> to local repo').action(recipe.pull);
 // vantage.command('recipe search <recipe>', 'Search for <recipe> in local and central repos').action(recipe.search);
 vantage.command('recipe show [recipe]', 'Show [recipe] or current recipe source').action(recipe.show);
@@ -323,6 +339,8 @@ vantage.command('recipe add component <component>', 'Add <component> to current 
 vantage.command('component list', 'Get a list of local components').action(component.list);
 vantage.command('component pull <url>', 'Fetch a component from <url> to local repo').action(component.pull);
 // vantage.command('component search <component>', 'Search for <component> in local and central repos').action(component.search);
+
+vantage.command('web theme load <filename>', 'Load a local <filename> theme into the local repo').action(web.theme.load);
 
 repoService.init();
 
