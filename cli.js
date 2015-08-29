@@ -79,10 +79,10 @@ var app = {
                     self.log(ERROR(err));
                     cb();
                 })
-                .catch(function(err){
-                    self.log(ERROR(err));
-                    cb();
-                })
+                // .catch(function(err){
+                //     self.log(ERROR(err));
+                //     cb();
+                // })
             } else {
                 this.log(ERROR(recipe, 'recipe is not available either in the local repo or the central hub.'));
                 cb();
@@ -112,7 +112,8 @@ var app = {
         cb();
     },
     package: function(args, cb) {
-        var zip = appService.packageApp({appName: args.app_name, destination: args.location});
+        var location = args.location || process.cwd();
+        var zip = appService.packageApp({appName: args.app_name, destination: location});
         this.log(args.app_name, 'has been packaged to', zip);
         cb();
     },
