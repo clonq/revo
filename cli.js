@@ -294,7 +294,7 @@ var web = {
     theme: {
         load: function(args, cb){
             var self = this;
-            repoService.web.theme.load(args.filename)
+            repoService.web.theme.load(args.dir)
             .then(function(theme){
                 self.log(theme, 'web theme is now available in the local repo.');
                 cb();
@@ -341,7 +341,7 @@ vantage.command('component list', 'Get a list of local components').action(compo
 vantage.command('component pull <url>', 'Fetch a component from <url> to local repo').action(component.pull);
 // vantage.command('component search <component>', 'Search for <component> in local and central repos').action(component.search);
 
-vantage.command('web theme load <filename>', 'Load a local <filename> theme into the local repo').action(web.theme.load);
+vantage.command('web theme load <dir>', 'Register the web theme in <dir> with the local repo').action(web.theme.load);
 
 repoService.init();
 
