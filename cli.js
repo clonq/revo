@@ -75,14 +75,14 @@ var app = {
                     common.recipe = recipe;
                     self.log(appName, 'app created in local repo.');
                     cb();
-                }, function(err){
+                // }, function(err){
+                //     self.log(ERROR(err));
+                //     cb();
+                })
+                .catch(function(err){
                     self.log(ERROR(err));
                     cb();
                 })
-                // .catch(function(err){
-                //     self.log(ERROR(err));
-                //     cb();
-                // })
             } else {
                 this.log(ERROR(recipe, 'recipe is not available either in the local repo or the central hub.'));
                 cb();
@@ -97,6 +97,7 @@ var app = {
         cb();
     },
     list: function(args, cb) {
+require('debug')('test:test')('pppppppp')        
         var apps = repoService.app.list();
         if(!!apps.length) {
             var rows = [];
