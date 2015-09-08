@@ -84,7 +84,7 @@ var app = {
                     cb();
                 })
             } else {
-                this.log(ERROR(recipe, 'recipe is not available either in the local repo or the central hub.'));
+                this.log(ERROR(recipe, 'recipe is not available in the local repo.'));
                 cb();
             }
         } else {
