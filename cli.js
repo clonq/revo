@@ -55,7 +55,7 @@ var app = {
     create: function(args, cb) {
         var self = this;
         var appName = args.app_name;
-        var recipe = args.recipe || common.recipe.name;
+        var recipe = args.recipe || ((!!common.recipe) ? common.recipe.name : undefined);
         if(!!recipe) {
             var recipeSrc = repoService.recipe.check(recipe);
             if(recipeSrc != 'unavailable') {
@@ -88,7 +88,7 @@ var app = {
                 cb();
             }
         } else {
-            this.log(ERROR('No current recipe. Create or load a recipe first.'));
+            this.log(ERROR('Please provide a recipe to create an app from.'));
             cb();
         }
     },
