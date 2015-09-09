@@ -97,7 +97,6 @@ var app = {
         cb();
     },
     list: function(args, cb) {
-require('debug')('test:test')('pppppppp')        
         var apps = repoService.app.list();
         if(!!apps.length) {
             var rows = [];
