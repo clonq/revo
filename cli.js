@@ -93,7 +93,15 @@ var app = {
         }
     },
     deploy: function(args, cb) {
-        this.log('TODO:', args.app, 'deployed');
+        var appName = args.app_name;
+        var opts = {
+            appName: appName,
+        //     recipeFile: argv.recipe,
+            // deploymentTarget: argv.target
+        };
+        this.log('TODO:', opts);
+        // appService.deployApp(opts);
+
         cb();
     },
     list: function(args, cb) {
@@ -316,7 +324,7 @@ vantage
 .command('app create <app_name> [recipe]', 'Create a new app <app_name> in the local repo')
 .option('-f, --force ', 'force existing app ovewrite')
 .action(app.create);
-// vantage.command('app deploy <app_name>', 'Deploy a previously created app').action(app.deploy);
+vantage.command('app deploy <app_name> [target]', 'Deploy a previously created app').action(app.deploy);
 vantage.command('app list', 'Get a list of local apps').action(app.list);
 // vantage.command('app run <app_name>', 'Run an existing app on the local host').action(app.run);
 // vantage.command('app search <app_name>', 'Search for <app> in local and central repos').action(app.search);
