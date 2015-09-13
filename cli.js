@@ -100,8 +100,16 @@ var app = {
             appName: appName,
             recipe: recipe
         };
-        if(args.target) opts.deploymentTarget = args.target;
-        appService.deployApp(opts).then(cb)
+        if(args.target) {
+            opts.deploymentTarget = args.target;
+        }
+        appService.deployApp(opts)
+        .then(function(result){
+            cb();
+        })
+        .catch(function(err){
+            cb(err);
+        })
     },
     list: function(args, cb) {
         var apps = repoService.app.list();
