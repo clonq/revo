@@ -94,15 +94,14 @@ var app = {
     },
     deploy: function(args, cb) {
         var appName = args.app_name;
+        var recipeFilename = repoService.recipe.filenameForApp(appName);
+        var recipe = require(recipeFilename);
         var opts = {
             appName: appName,
-        //     recipeFile: argv.recipe,
-            // deploymentTarget: argv.target
+            recipe: recipe
         };
-        this.log('TODO:', opts);
-        // appService.deployApp(opts);
-
-        cb();
+        if(args.target) opts.deploymentTarget = args.target;
+        appService.deployApp(opts).then(cb)
     },
     list: function(args, cb) {
         var apps = repoService.app.list();
@@ -119,7 +118,7 @@ var app = {
         }
         cb();
     },
-    package: function(args, cb) {
+    export: function(args, cb) {
         var location = args.location || process.cwd();
         var zip = appService.packageApp({appName: args.app_name, destination: location});
         this.log(args.app_name, 'has been packaged to', zip);
@@ -328,7 +327,7 @@ vantage.command('app deploy <app_name> [target]', 'Deploy a previously created a
 vantage.command('app list', 'Get a list of local apps').action(app.list);
 // vantage.command('app run <app_name>', 'Run an existing app on the local host').action(app.run);
 // vantage.command('app search <app_name>', 'Search for <app> in local and central repos').action(app.search);
-vantage.command('app package <app_name>', 'extract <app_name> from the local repo into a zip file').action(app.package);
+vantage.command('app export <app_name>', 'Export <app_name> from the local repo into a zip file').action(app.export);
 vantage.command('app remove <app_name>', 'Delete <app_name> from the local repo').action(app.remove);
 
 // recipe command group
