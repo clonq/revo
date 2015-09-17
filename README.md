@@ -219,11 +219,11 @@ The `config` section holds configuration data specific to each component. For ex
 
 Components
 ---
-Components are the main ingredient of a revo recipe. They are regular node.js modules that follow a certain design pattern in order to communicate with the other components within a revo runtime container. Components can of one of two types: `common` or `web`. Common components don't have a UI, web components are designed to live in a web page.
+Components are the main ingredient of a revo recipe. They are regular node.js modules that follow a certain design pattern in order to communicate with the other components within a revo runtime container. Components can be of one of two types: `common` or `web`. Common components don't have a UI, web components are designed to live in a web page.
 
 Components can be stored anywhere on the web. When declared in a recipe, the revo engine retrieves them from the specified url and caches them in the local repo. When the application is assembled, the declared components are copied to the application directory and the application configuration is updated to contain component-specific config.
 
-Revo components are designed to be reused in any revo-generated application. The recipe for a new application simply lists the required components and their optional configuration elements. The rest is taken care by the evant-based communication mechanism leveraged by the revo runtime.
+Revo components are designed to be reused in any revo-generated application. The recipe for a new application simply lists the required components and their optional configuration elements. The rest is taken care by the event-based communication mechanism leveraged by the revo runtime.
 
 Everyone is encouraged to write revo components following the [revo design principles for component development]().
 
