@@ -116,10 +116,10 @@ var app = {
         if(!!apps.length) {
             var rows = [];
             apps.forEach(function(appName){
-                rows.push([appName, 'local']);
+                rows.push([appName, 'local', appService.isAppRunning(appName)?'running':'stopped']);
             })
             this.log('');
-            util.table(rows, ['Application Name', 'Repository']);
+            util.table(rows, ['Application Name', 'Repository', 'Status']);
             this.log('');
         } else {
             this.log('There are no apps in the local repo.');
@@ -132,7 +132,7 @@ var app = {
         this.log(args.app_name, 'has been packaged to', zip);
         cb();
     },
-    run: function(args, cb) {
+    start: function(args, cb) {
         var self = this;
         appService.runApp(args.app_name, function(){
             self.log(args.app_name, 'started');
@@ -330,8 +330,20 @@ var web = {
     }
 }
 
+function exit() {
+    var self = this;
+    appService.getRunningApps().forEach(function(appName){
+        appService.stopApp(appName, function(err){
+            if(err) self.log(err);
+            else self.log(appName, 'terminated');
+        });
+    })
+    this.log('See you soon');
+    process.exit();
+}
+
 // disable default vantage menu
-vantage.command('exit', 'Exits revo\'s interactive CLI.').action(function(args,cb){ this.log('See you soon'); process.exit() });
+vantage.command('exit', 'Exits revo\'s interactive CLI.').action(exit);
 vantage.command('repl').hidden().action(function(args,cb){cb()});
 vantage.command('use').hidden().action(function(args,cb){cb()});
 vantage.command('vantage').hidden().action(function(args,cb){cb()});
@@ -343,7 +355,7 @@ vantage
 .action(app.create);
 vantage.command('app deploy <app_name> [target]', 'Deploy a previously created app').action(app.deploy);
 vantage.command('app list', 'Get a list of local apps').action(app.list);
-vantage.command('app run <app_name>', 'Run an existing app locally').action(app.run);
+vantage.command('app start <app_name>', 'Run an existing app locally').action(app.start);
 vantage.command('app stop <app_name>', 'Stop a running app').action(app.stop);
 // vantage.command('app search <app_name>', 'Search for <app> in local and central repos').action(app.search);
 vantage.command('app export <app_name>', 'Export <app_name> from the local repo into a zip file').action(app.export);
