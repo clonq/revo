@@ -133,8 +133,18 @@ var app = {
         cb();
     },
     run: function(args, cb) {
-        this.log(ERROR('not implemented'));
-        cb();
+        var self = this;
+        appService.runApp(args.app_name, function(){
+            self.log(args.app_name, 'started');
+            cb();
+        });
+    },
+    stop: function(args, cb) {
+        var self = this;
+        appService.stopApp(args.app_name, function(){
+            self.log(args.app_name, 'terminated');
+            cb();
+        });
     },
     search: function(args, cb){
         this.log(ERROR('not implemented'));
@@ -333,7 +343,8 @@ vantage
 .action(app.create);
 vantage.command('app deploy <app_name> [target]', 'Deploy a previously created app').action(app.deploy);
 vantage.command('app list', 'Get a list of local apps').action(app.list);
-// vantage.command('app run <app_name>', 'Run an existing app on the local host').action(app.run);
+vantage.command('app run <app_name>', 'Run an existing app locally').action(app.run);
+vantage.command('app stop <app_name>', 'Stop a running app').action(app.stop);
 // vantage.command('app search <app_name>', 'Search for <app> in local and central repos').action(app.search);
 vantage.command('app export <app_name>', 'Export <app_name> from the local repo into a zip file').action(app.export);
 vantage.command('app remove <app_name>', 'Delete <app_name> from the local repo').action(app.remove);
