@@ -118,7 +118,7 @@ revo 0.7.0: app start myapp
 myapp started
 revo 0.7.0: 
 ```
-Revo starts the app in the background and returns to the command prompt. The hello-world recipe creates a simple web app based on the [initializr](www.initializr.com) bootstrap theme. The server runs by default on port 3000 and you can check the app runing at http://localhost:3000.
+Revo starts the app in the background and returns to the command prompt. The hello-world recipe creates a simple web app based on the [initializr](http://www.initializr.com) bootstrap theme. The server runs by default on port 3000 and you can check the app runing at http://localhost:3000.
 
 Executing `app list` again will reflect the new status of the app:
 
