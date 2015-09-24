@@ -14,14 +14,14 @@ Run REVO
 ---
 ```
 $ sudo revo
-revo 0.5.0: 
+revo 0.7.0: 
 ```
 The new prompt shows that revo is running and accepting commands.
 
 Type `help` to get the list of available commands. If everything runs well, the command’s output looks like this:
 
 ```
-revo 0.5.0: help
+revo 0.7.0: help
 
   Commands:
 
@@ -30,40 +30,45 @@ revo 0.5.0: help
 
   Command Groups:
 
-    app *           5 sub-commands.
-    recipe *        5 sub-commands.
+    app *           7 sub-commands.
+    recipe *        9 sub-commands.
     component *     2 sub-commands.
+    web *           1 sub-command.
 ```
 This message shows that your installation appears to be working correctly.
 
 Let's try to create a simple application. Type `app` to get the list of application-specific sub-commands:
 
 ```
-revo 0.5.0: app
+revo 0.7.0: app
 
   Commands:
 
     app create [options] <app_name> [recipe]  Create a new app <app_name> in the local repo
-    app deploy <app_name>                     Deploy a previously created app
+    app deploy <app_name> [target]            Deploy a previously created app
     app list                                  Get a list of local apps
-    app run <app_name>                        Run an existing app on the local host
-    app search <app_name>                     Search for <app> in local and central repos
-
+    app start <app_name>                      Run an existing app locally
+    app stop <app_name>                       Stop a running app
+    app export <app_name>                     Export <app_name> from the local repo into a zip file
+    app remove <app_name>                     Delete <app_name> from the local repo
 
 ```
 
 To create an application you need a recipe. Let's switch to recipes for a second. Type `recipe` for the available recipe sub-commands:
 
 ```
-revo 0.5.0: recipe
+revo 0.7.0: recipe
 
   Commands:
 
-    recipe list             Get a list of local recipes
-    recipe load <recipe>    Make <recipe> the current source for app creation, deployment, etc
-    recipe pull <url>       Fetch a recipe from <url> to local repo
-    recipe search <recipe>  Search for <recipe> in local and central repos
-    recipe show <recipe>    Show <recipe> source
+    recipe create <recipe_name>  Create a new empty recipe and make it current
+    recipe list                  Get a list of local recipes
+    recipe use <recipe>          Make <recipe> the current source for app creation, deployment, etc
+    recipe load <filename>       Load a local <filename> recipe into the local repo
+    recipe pull <url>            Fetch a recipe from <url> to local repo
+    recipe show [recipe]         Show [recipe] or current recipe source
+    recipe remove [recipe]       Delete the current or the specified [recipe] from the local repo
+    recipe set <key> <value>     Set recipe metadata. Used to set recipe name, description and version
 
   Command Groups:
 
@@ -73,14 +78,14 @@ revo 0.5.0: recipe
 An application recipe can be stored on any server but in order to create an application, you need a copy of the recipe in the local repo. Let's fetch a basic recipe from github:
 
 ```
-revo 0.5.0: recipe pull https://raw.githubusercontent.com/clonq/revo-recipes/master/hello-world.yaml
+revo 0.7.0: recipe pull https://raw.githubusercontent.com/clonq/revo-recipes/master/hello-world.yaml
 recipe hello-world downloaded to local repo
 ```
 
 Type `recipe list` to show the list of recipes avaiable in your local repository:
 
 ```
-revo 0.5.0: recipe list
+revo 0.7.0: recipe list
 
 Recipe Name  Version  Platform  Author   Description
 
@@ -91,7 +96,7 @@ hello-world  1.0.0    web       revo     basic Hello World recipe
 The "hello-world" recipe has been successfully downloaded to your local repo. Let's use it to build a new app. Type `app create myapp hello-world` to create a new application named "myapp" using the "hello-world" recipe: 
 
 ```
-revo 0.5.0: app create myapp hello-world
+revo 0.7.0: app create myapp hello-world
 Using local recipe: hello-world
 myapp app created in local repo
 ```
@@ -99,23 +104,44 @@ myapp app created in local repo
 To verify the application was created, type `app list`:
 
 ```
-revo 0.5.0: app list
+revo 0.7.0: app list
 
-Application Name  Repository
+Application Name  Repository  Status
 
-myapp             local
+myapp             local       stopped
 ```
 
-The app is now available in the local repo. To retrieve the app from the repository and package it as a standalone node.js application, use `app package`:
+The app is now available in the local repo. You can run myapp right from the revo prompt:
 
 ```
-revo 0.5.0: app package myapp
+revo 0.7.0: app start myapp
+myapp started
+revo 0.7.0: 
+```
+Revo starts the app in the background and returns to the command prompt. The hello-world recipe creates a simple web app based on the [initializr](www.initializr.com) bootstrap theme. The server runs by default on port 3000 and you can check the app runing at http://localhost:3000.
+
+Executing `app list` again will reflect the new status of the app:
+
+```
+revo 0.7.0: app list
+
+Application Name  Repository  Status
+
+myapp             local       running
+```
+
+You can stop a running app with `app stop <applicaton_name>`.
+
+To retrieve the app from the repository and package it as a standalone node.js application, use `app package`:
+
+```
+revo 0.7.0: app package myapp
 myapp has been packaged to /revo/demo/myapp.zip
 ```
 The app is now available as a zip file in your current directory. Exit revo, unzip the new app in the directory of your choice and run the app:
 
 ```
-revo 0.5.0: exit
+revo 0.7.0: exit
 See you soon
 MacBook:/revo/demo revo-user$ ls -al
 ...
@@ -144,7 +170,7 @@ Recipes
 In the REVO world, you use recipes to create new applications. Recipes are .yaml files that describe how an application should be assembled from components. Let's have a look at the hello-world recipe. At revo prompt type `recipe show hello-world`:
 
 ```
-revo 0.5.0: recipe show hello-world
+revo 0.7.0: recipe show hello-world
 {
     "name": "hello-world",
     "description": "basic Hello World recipe",
