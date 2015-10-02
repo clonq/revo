@@ -382,6 +382,18 @@ vantage.command('web theme load <dir>', 'Register the web theme in <dir> with th
 
 repoService.init();
 
+var program = require('commander');
+
+// program
+//   .version(pkg.version)
+//   .option('-v, --verbose', 'verbose mode')
+//   .parse(process.argv);
+
+// if (program.verbose) {
+//     process.env.DEBUG = 'revo:*';
+//     console.log('verbose mode is on');
+// }
+
 // vantage
 //     .exec("help").then(function(){
         vantage
