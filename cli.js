@@ -13,6 +13,9 @@ var INFO = require('chalk').green;
 
 var common = {};
 
+var vantage = require('vantage')();
+require('debug').log = vantage.log.bind(vantage);
+
 var component = {
     list: function(args, cb){
         var components = repoService.component.list();
