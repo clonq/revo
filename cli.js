@@ -51,6 +51,18 @@ var component = {
             self.log(ERROR(err));
             cb();
         })
+    },
+    remove: function(args, cb){
+        var self = this;
+        repoService.component.remove(args.component_name)
+        .then(function(componentName){
+            self.log(args.component_name, 'component removed from local repo.');
+            cb();
+        })
+        .catch(function(err){
+            self.log(ERROR(err));
+            cb();
+        });
     }
 }
 
@@ -379,6 +391,7 @@ vantage.command('recipe add component <component>', 'Add <component> to current 
 // component command group
 vantage.command('component list', 'Get a list of local components').action(component.list);
 vantage.command('component pull <url>', 'Fetch a component from <url> to local repo').action(component.pull);
+vantage.command('component remove <component_name>', 'Delete the specified <component_name> from the local repo').action(component.remove);
 // vantage.command('component search <component>', 'Search for <component> in local and central repos').action(component.search);
 
 vantage.command('web theme load <dir>', 'Register the web theme in <dir> with the local repo').action(web.theme.load);
