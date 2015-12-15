@@ -4,6 +4,7 @@ var pkg = require('./package.json');
 var vantage = require('vantage')();
 var appService = require('./lib/services/appService');
 var repoService = require('./lib/services/repoService');
+var cloudService = require('./lib/services/cloudService');
 var util = require('./lib/util');
 var S = require('string');
 
@@ -46,6 +47,17 @@ var component = {
         repoService.component.download(args.url)
         .then(function(componentName){
             self.log(componentName, 'component downloaded to local repo.');
+            cb();
+        }, function(err){
+            self.log(ERROR(err));
+            cb();
+        })
+    },
+    push: function(args, cb) {
+        var self = this;
+        cloudService.createLambda()
+        .then(function(componentName){
+            self.log(componentName, 'lambda function created.');
             cb();
         }, function(err){
             self.log(ERROR(err));
@@ -391,6 +403,7 @@ vantage.command('recipe add component <component>', 'Add <component> to current 
 // component command group
 vantage.command('component list', 'Get a list of local components').action(component.list);
 vantage.command('component pull <url>', 'Fetch a component from <url> to local repo').action(component.pull);
+vantage.command('component push <component_name>', 'Deploy <component_name> as a lambda function in the cloud').action(component.push);
 vantage.command('component remove <component_name>', 'Delete the specified <component_name> from the local repo').action(component.remove);
 // vantage.command('component search <component>', 'Search for <component> in local and central repos').action(component.search);
 
