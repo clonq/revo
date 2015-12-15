@@ -231,7 +231,7 @@ The `placeholders` key defines DOM elements that can be used by web components t
 
 The `components` section is a list of component entries. Each entry has a `name` key, a `repo` key identifying where the component should be fetched from and optionaly a `type` key.
 
-The component name uniquely identifies the component within te repo.
+The component name uniquely identifies the component within the repo.
 
 The repo can be either the keyword `github` or an url. Revo will try to download the component from the repo url. If the value of the repo key is `github`, revo will fetch the component from *https://github.com/`name`/archive/master.zip*
 
